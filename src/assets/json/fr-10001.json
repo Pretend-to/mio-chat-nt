@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "role": "other",
+      "text": "你好，有什么可以帮助您？",
+      "time": 1632419880000
+    },
+    {
+      "role": "user",
+      "text": "介绍你自己<pic>",
+      "time": 1632419880000
+    },
+    {
+      "role": "user",
+      "text": "介绍你自己<pic>",
+      "time": 1632419880000
+    },
+    {
+      "role": "other",
+      "text": "介绍你mabi<pic>",
+      "time": 1632419880000
+    }
+  ]
+}
