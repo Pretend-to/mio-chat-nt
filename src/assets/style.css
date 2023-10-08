@@ -350,6 +350,7 @@ button#addcont {
     justify-content: space-;
     flex : 0 0 140px;
     flex-wrap: wrap;
+    max-width: 140px;
 }
 
 
@@ -361,10 +362,13 @@ button#addcont {
 }
 
 .info #msgctt{
+    max-width: 100%;
     color: gray;
     font-size: 10px;
     margin-left: 8px;
-    text-wrap: nowrap;
+    white-space: nowrap; /* 防止文字换行 */
+    overflow: hidden; /* 隐藏溢出的内容 */
+    text-overflow: ellipsis; /* 显示省略号 */
 }
 
 .people>.lists#active * {
@@ -448,7 +452,7 @@ p#ho-emoji {
 }
 
 
-.bu-emoji svg:hover p#ho-emoji {
+.bu-emoji:hover p#ho-emoji {
     display: block;
 }
 

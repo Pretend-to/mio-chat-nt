@@ -47,14 +47,9 @@ class Contactor {
     content(last) {
         if (!last) {
             return '';
-        }
-        
-        if (last.length <= 10) {
-            // 长度小于等于10，直接返回消息整体
-            return last;
-        } else {
+        }else {
             // 长度大于10，返回前8位并补充2位省略号
-            return last.slice(0, 10) + '...';
+            return last;
         }
     }
 }
