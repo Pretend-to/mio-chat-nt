@@ -27,7 +27,7 @@
 4. `npm run build`编译为可部署的静态文件,你可以在`/dist`看到它们。
 
 ## 鸣谢
-- 本项目直接或间接使用的优秀的开源项目及其开发者：
+- 本项目直接或间接使用的优秀的开源项目：
   -  [vue](https://vuejs.org/)
   - [chatgpt-mirai-qq-bot
 ](https://github.com/lss233/chatgpt-mirai-qq-bot) 
