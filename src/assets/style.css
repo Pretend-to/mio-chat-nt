@@ -337,7 +337,7 @@ button#addcont {
 }
 
 .lists .name {
-    flex-basis: 70px;
+    flex-basis: 64px;
     margin-top: 12px;
     font-size: 14px;
     margin-left: 8px;
@@ -347,7 +347,7 @@ button#addcont {
 .info{
     display: flex;
     align-items: baseline;
-    justify-content: space-;
+    justify-content: space-between;
     flex : 0 0 140px;
     flex-wrap: wrap;
 }
