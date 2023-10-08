@@ -90,9 +90,9 @@ export default {
         }, reset() {
             const sb = getinfo(this.contactor.uin)
             initcontactor(sb)
-            this.messagechain = [];
-            const name = `ch-${this.contactor.uin}`
-            localStorage.removeItem(name);
+            // this.messagechain = [];
+            // const name = `ch-${this.contactor.uin}`
+            // localStorage.removeItem(name);
         }
     }, computed: {
         showwindow() {

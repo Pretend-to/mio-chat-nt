@@ -51,7 +51,7 @@ body {
 }
 
 #chatwindow {
-    min-width: 500px;
+    min-width: 1px;
     position: relative;
     display: flex;
     flex-grow: 1;
