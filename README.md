@@ -10,6 +10,8 @@
 - 对话
 
 ## TODO
+- 移动端支持
+- ~~小程序~~ (没打算过审)
 - UI 美化
 - 访问/管理码
 - 基于前端的联系人管理
@@ -33,5 +35,5 @@
   - [emoji-picker-element](https://www.npmjs.com/package/emoji-picker-element)
 - 给我 star 的你 ❤️
 
-## 找到我
-  
+## 找到我&&学习交流
+- 企鹅群 : 798543340 
