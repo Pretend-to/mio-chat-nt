@@ -85,14 +85,16 @@ export default {
             const name = `ch-${this.contactor.uin}`
             localStorage.removeItem(name);
             this.messagechain = [];
+            this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
+            console.log("已重置初始化状态")
             this.toupdate = true;
             init();
         }, reset() {
             const sb = getinfo(this.contactor.uin)
             initcontactor(sb)
-            this.messagechain = [];
-            const name = `ch-${this.contactor.uin}`
-            localStorage.removeItem(name);
+            // this.messagechain = [];
+            // const name = `ch-${this.contactor.uin}`
+            // localStorage.removeItem(name);
         }
     }, computed: {
         showwindow() {
@@ -107,14 +109,18 @@ export default {
         this.tobuttom();
         //console.log("初始渲染并滚动到底部理论完成")
         watch(() => this.contactor.uin, (newValue, oldValue) => {
-            //console.log('property 变化了：', newValue, oldValue);
             if (getmsg(newValue).length) {
                 this.messagechain = getmsg(this.contactor.uin);
                 this.tobuttom();
                 console.log(getmsg(newValue).length)
-            } else {
-                console.log("未找到聊天记录，进行初始化操作")
+            } else if(this.contactor.inited.includes(newValue)){
+                console.log("未找到聊天记录，但已进行过初始化")
+                this.messagechain = [];
+            }else{
+                console.log("未找到聊天记录，且未进行过初始化操作，进行初始化人格操作")
+                this.contactor.inited.push(newValue)
                 this.reset()
+                this.messagechain = [];
             }
         });
         setTimeout(this.tobuttom, 0)
@@ -188,7 +194,7 @@ export default {
                     </svg>
                 </div>
                 <div class="bu-emoji">
-                    <p id="ho-emoji">重置</p>
+                    <p id="ho-emoji">重置人格</p>
                     <svg @click="reset" t="1695146872454" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="3849">
                         <path
@@ -197,7 +203,7 @@ export default {
                     </svg>
                 </div>
                 <div class="bu-emoji">
-                    <p id="ho-emoji">清屏</p>
+                    <p id="ho-emoji">清除记录</p>
                     <svg @click="cleanScreen" t="1695147353549" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="4763" width="20" height="20">
                         <path

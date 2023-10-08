@@ -4,6 +4,7 @@ export const useContactorstore = defineStore('contactor',{
     state:() => ({ 
         uin:10000,
         newmsg:false,
-        editing:false
+        editing:false,
+        inited:[]
      }),
 })
