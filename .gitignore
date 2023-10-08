@@ -27,6 +27,5 @@ coverage
 *.sln
 *.sw?
 
-src/assets/json/main.json
-src/assets/json/config.json
+
 test.html
