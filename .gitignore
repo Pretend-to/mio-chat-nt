@@ -13,13 +13,13 @@ dist
 dist-ssr
 coverage
 *.local
-./.VSCodeCounter
+.VSCodeCounter/*
 
 /cypress/videos/
 /cypress/screenshots/
 
 # Editor directories and files
-./.vscode/
+.vscode/*
 .idea
 *.suo
 *.ntvs*
@@ -27,6 +27,6 @@ coverage
 *.sln
 *.sw?
 
-./src/assets/json/main.json
-./src/assets/json/config.json
+src/assets/json/main.json
+src/assets/json/config.json
 test.html

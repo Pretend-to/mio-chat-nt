@@ -1,0 +1,5 @@
+{   
+    "baseurl":"http://127.0.0.1:1234", 
+    "resetprompt":"重置会话",
+    "loadprompt":"加载预设 "
+}

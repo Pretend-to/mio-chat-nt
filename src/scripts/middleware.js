@@ -108,11 +108,7 @@ export function makelist() {
     const main = getmain()
     const list = []
     main.contactor.forEach(element => {
-        
         const messagechain = getmsg(element.uin)
-        //console.log(messagechain)
-
-        //console.log(messagechain[messagechain.length - 1])
         const contactor = new Contactor({ info: element, lastchat: messagechain[messagechain.length - 1] });
         list.push(contactor);
     });
