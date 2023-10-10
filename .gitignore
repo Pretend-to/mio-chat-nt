@@ -15,6 +15,7 @@ coverage
 *.local
 .VSCodeCounter/*
 src/assets/json/*
+jsond/*
 
 /cypress/videos/
 /cypress/screenshots/
