@@ -1,5 +1,5 @@
 {   
-    "baseurl":"后端地址(注意http(s))", 
+    "baseurl":"https://pi.fcip.top:2888", 
     "resetprompt":"重置会话",
-    "loadprompt":"加载预设 "
+    "loadprompt":"变成赛博"
 }
