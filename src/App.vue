@@ -88,6 +88,7 @@ export default {
   #friendlists {
     flex-basis: 100%;
     max-width: 100%;
+    border: 0px;
   }
 
   #app {
@@ -119,5 +120,14 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+  }
+
+  #app{
+    border: none;
+    border-radius: none;
+  }
+  body{
+    margin: 0;
+    height: 100vh;
   }
 }</style>
