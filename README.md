@@ -1,20 +1,22 @@
-# mio-chat-nt
+![Alt text](github/logo.gif)
   仿 qqnt 的 gpt webUI，由 [@lss233](https://github.com/lss233) 的优秀开源项目 [chatgpt-mirai-qq-bot
 ](https://github.com/lss233/chatgpt-mirai-qq-bot) 提供后端支持。
 
 
-![Alt text](github/image.png)
+| ![网页端](https://img.shields.io/badge/-网页端-E2CDBC?style=for-the-badge)                     | ![移动端](https://img.shields.io/badge/-移动端-E2CDBC?style=for-the-badge)                   | 
+|------------------------------|------------------------------|
+| ![image](github/web.png) | ![image](github/mobile.png) |
 
-写着玩的，主要用于练手 css && vue . 
 
 ## 现有功能
 - markdown 支持
 - 对话
+- 移动端支持 (优化中) 
+
 
 ## TODO
 - 聊天记录以图像分享
 - 音频/图像支持
-- 移动端支持
 - ~~小程序~~ (没打算过审)
 - UI 美化
 - 访问/管理码
