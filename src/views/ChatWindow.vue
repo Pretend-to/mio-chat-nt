@@ -96,6 +96,8 @@ export default {
             // this.messagechain = [];
             // const name = `ch-${this.contactor.uin}`
             // localStorage.removeItem(name);
+        }, tolist(){
+            this.contactor.uin = 10000
         }
     }, computed: {
         showwindow() {
@@ -140,6 +142,9 @@ export default {
 <template>
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
+            <div class="return" @click="tolist">
+                <svg t="1696954263382" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1042" width="20" height="20"><path d="M776.191485 982.272081L296.192421 515.840991c-1.279998-1.279998-1.535997-2.815995-1.535997-3.839993 0-1.023998 0.256-2.559995 1.535997-3.839992L775.935485 41.729915c6.143988-5.887989 6.399988-15.871969 0.511999-22.015957l-14.335972-14.847971c-5.887989-6.399988-15.61597-6.399988-21.759957-0.511999L260.60849 470.785079c-11.263978 11.007979-17.407966 25.59995-17.407966 41.215919 0 15.61597 6.143988 30.463941 17.407966 41.21592l479.999064 466.43109c6.143988 5.887989 15.871969 5.631989 21.759958-0.511999l14.335972-14.847971c5.887989-6.143988 5.631989-16.127969-0.511999-22.015957z" p-id="1043"></path></svg>
+            </div>
             <div class="somebody">{{ sbinfo.name }}</div>
             <div class="options">
                 <div id="system">
@@ -282,9 +287,43 @@ svg:hover {
     fill: rgb(0, 153, 255);
 }
 
+.return{
+    display: none;
+}
+
 @media (max-width: 600px) {
     #chatwindow{
         height: 100%;
+    }
+    .upsidebar{
+        background-color: #00A8FF;
+        background: linear-gradient(to right, #00D2F8, #00A8FF);
+    }
+    .upsidebar *{
+        color: white;
+        fill: white;
+    }
+
+    #system{
+        display: none;
+    }
+
+    .return{
+        display: block;
+        margin-left: 16px;
+        margin-bottom: 8px;
+    }
+    .return svg{
+        stroke-width: 3;
+    }
+
+    #share{
+        display: flex;
+        align-items: end;
+        padding-bottom: 4px;
+    }
+    .somebody{
+        padding-bottom: 4px;
     }
 }
 </style>

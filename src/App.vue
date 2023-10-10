@@ -27,13 +27,28 @@ export default {
               this.showOther = true;
               this.showWindow = true;
             }else if(this.one.uin == 10000){
-              this.showOther = false
+              this.showOther = true
               this.showWindow = false
             }else {
               this.showOther = false
               this.showWindow = true
             }
         }) 
+    watch(() => this.one.uin,(newValue,oldValue) =>{
+      if(this.windowWidth < 600 ){
+          console.log(`${newValue},${oldValue}`)
+          if(newValue != 10000){
+            this.showOther = false
+            this.showWindow = true
+          }else if(oldValue != 10000){
+            this.showOther = true
+            this.showWindow = false
+          }else{
+            this.showOther = false
+            this.showWindow = true
+          }
+      }
+    })
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize); // 在组件销毁前移除事件监听
