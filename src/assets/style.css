@@ -1,15 +1,3 @@
-@font-face {
-    font-family: Genshin-zh;
-    src: url('./fonts/hk4e_zh-cn.ttf') format('truetype');
-}
-@font-face {
-    font-family: xihei-zh;
-    src: url('./fonts/STXIHEI.TTF') format('truetype');
-}
-@font-face {
-    font-family: heiti-zh;
-    src: url('./fonts/simhei.ttf') format('truetype');
-}
 
 body {
     overflow: hidden;
