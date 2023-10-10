@@ -21,6 +21,7 @@ jsond/*
 
 # Editor directories and files
 .vscode/*
+.vs/*
 .idea
 *.suo
 *.ntvs*
