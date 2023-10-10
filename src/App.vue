@@ -111,6 +111,7 @@ export default {
   }
 
   #sidebar {
+    background-color: rgb(250,250,250);
     height: 48px;
     min-width: 100%;
     flex-direction: row;
@@ -144,5 +145,12 @@ export default {
   body{
     margin: 0;
     height: 100vh;
+  }
+  .upsidebar#friends{
+    background-color: rgb(240,240,240);
+  }
+  .bu-add button,
+  .search#people{
+    background-color: white;
   }
 }</style>
