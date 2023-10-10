@@ -15,7 +15,7 @@ export default {
         }
     },
     methods: {
-        thatone(id,item) {
+        thatone(id, item) {
             if (this.activeone + 1) {
                 //console.log("已经清除上一处引索" + this.activeone + "的属性")
                 if (this.list[this.activeone].important) {
@@ -33,15 +33,17 @@ export default {
         getindex(uin) {
             const index = this.list.findIndex(item => item.uin === uin);
             return index;
-        },addone() {
-            
-        }
+        }, addone() {
 
+        }
     },
     mounted() {
-        watch(() => this.contactor.newmsg,(newValue,oldValue) => {
-            //console.log("PPPP")
-            this.list=makelist()
+        if(this.contactor.uin != 10000) this.list[this.getindex(this.contactor.uin)].active = "active"
+        watch(() => this.contactor.newmsg, (newValue, oldValue) => {
+            this.list = makelist()
+            this.list.forEach(function (element) {
+                element.active = "inactive";
+            });
             this.list[this.getindex(this.contactor.uin)].active = "active"
             this.contactor.newmsg = false;
         })
@@ -66,7 +68,7 @@ export default {
             </div>
         </div>
         <div class="people">
-            <div @click="thatone(index,item)" v-for="(item, index) of list" :key="index" class="lists"
+            <div @click="thatone(index, item)" v-for="(item, index) of list" :key="index" class="lists"
                 :id="(item.important && !item.active) ? 'important' : item.active">
                 <div class="avatar">
                     <img :src="item.avatar" :alt="item.name">
