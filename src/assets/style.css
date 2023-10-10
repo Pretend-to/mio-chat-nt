@@ -27,10 +27,9 @@ body {
 }
 
 #friendlists {
-    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.5);
+    height: 100%;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     max-width: 200px;
     border-left: 1px solid rgba(161, 154, 154, 0.626);
     border-right: 1px solid rgba(161, 154, 154, 0.626);
@@ -46,15 +45,14 @@ body {
 }
 
 .upsidebar#friends {
-    max-height: 72px;
     justify-content: space-between;
     display: flex;
     flex-direction: row;
     background-color: rgb(255, 255, 255);
-    flex: 0 1 32px;
-    border-right: 0px;
+    flex: 0 0 32px;
     padding: 22px 12px 8px 12px;
     align-items: stretch;
+    height: 32px;
 }
 
 .upsidebar#chat {
@@ -119,12 +117,17 @@ button#addcont {
 }
 
 .inputbar {
-    flex-basis: 176px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    min-height: 176px;
     border: 0px solid rgba(161, 154, 154, 0.626);
+}
+
+@media (min-width: 600px) {
+    .inputbar {
+
+    flex-basis: 176px;
+    }
 }
 
 .chat-icon {
@@ -239,7 +242,7 @@ button#addcont {
     flex-basis: 20px;
     display: flex;
     align-items: flex-start;
-    max-width: 100%;
+    max-width: calc(100% - 20px);
     padding: 4px 12px;
     margin: 8px;
     border-radius: 8px;
@@ -273,7 +276,7 @@ button#addcont {
     border-radius: 5%;
 }
 .people {
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .people>.lists {
@@ -371,11 +374,12 @@ button#addcont {
 
 
 .input-box button {
+    white-space: nowrap;
     color: aliceblue;
     border-radius: 5px;
     border: 0px;
     background-color: rgb(0, 153, 255);
-    padding: 4px 26px;
+    padding: 4px 16px;
     margin-bottom: 8px;
 }
 .input-box button:hover {
@@ -393,7 +397,6 @@ button#addcont {
     flex-wrap: wrap;
     display: flex;
     background-color: rgb(241, 241, 241);
-    ;
     border: 0px;
     flex-grow: 1;
     width: 100%;

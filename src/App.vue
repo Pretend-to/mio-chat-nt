@@ -28,37 +28,37 @@ export default {
   mounted() {
     this.getWindowWidth(); // 获取初始窗口宽度
     window.addEventListener('resize', this.handleResize); // 监听窗口大小变化
-    watch(() => this.windowWidth,(newValue,oldValue) => {
-            if(newValue > 600 ){
-              this.showOther = true;
-              this.showWindow = true;
-            }else if(this.one.uin == 10000){
-              this.showOther = true
-              this.showWindow = false
-            }else {
-              this.showOther = false
-              this.showWindow = true
-            }
-        }) 
-    watch(() => this.one.uin,(newValue,oldValue) =>{
-      if(this.windowWidth < 600 ){
-          console.log(`${newValue},${oldValue}`)
-          if(newValue != 10000){
-            this.showOther = false
-            this.showWindow = true
-          }else if(oldValue != 10000){
-            this.showOther = true
-            this.showWindow = false
-          }else{
-            this.showOther = false
-            this.showWindow = true
-          }
+    watch(() => this.windowWidth, (newValue, oldValue) => {
+      if (newValue > 600) {
+        this.showOther = true;
+        this.showWindow = true;
+      } else if (this.one.uin == 10000) {
+        this.showOther = true
+        this.showWindow = false
+      } else {
+        this.showOther = false
+        this.showWindow = true
+      }
+    })
+    watch(() => this.one.uin, (newValue, oldValue) => {
+      if (this.windowWidth < 600) {
+        console.log(`${newValue},${oldValue}`)
+        if (newValue != 10000) {
+          this.showOther = false
+          this.showWindow = true
+        } else if (oldValue != 10000) {
+          this.showOther = true
+          this.showWindow = false
+        } else {
+          this.showOther = false
+          this.showWindow = true
+        }
       }
     })
 
-    if(this.windowWidth < 600){
+    if (this.windowWidth < 600) {
       this.list.forEach(element => {
-        if(!element.lasttime && !this.one.inited.includes(element.uin)){
+        if (!element.lasttime && !this.one.inited.includes(element.uin)) {
           initcontactor(element)
           this.one.inited.push(element.uin)
         }
@@ -99,8 +99,8 @@ export default {
 
 <style>
 @media (max-width: 600px) {
-
   #friendlists {
+    height: calc(100% - 40px);
     flex-basis: 100%;
     max-width: 100%;
     border: 0px;
@@ -111,7 +111,7 @@ export default {
   }
 
   #sidebar {
-    background-color: rgb(250,250,250);
+    background-color: rgb(250, 250, 250);
     height: 48px;
     min-width: 100%;
     flex-direction: row;
@@ -138,19 +138,65 @@ export default {
     justify-content: space-around;
   }
 
-  #app{
+  #app {
     border: none;
     border-radius: none;
   }
-  body{
+
+  body {
     margin: 0;
     height: 100vh;
   }
-  .upsidebar#friends{
-    background-color: rgb(240,240,240);
+
+  .upsidebar#friends {
+    background-color: rgb(240, 240, 240);
   }
+
   .bu-add button,
-  .search#people{
+  .search#people {
     background-color: white;
   }
+
+  .inputbar {
+    flex-direction: column-reverse;
+    flex-basis: none;
+    min-height: 0;
+    padding-top: 8px;
+  }
+
+  .input-box {
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+
+  }
+
+  .input-content textarea {
+    height: 28px;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .input-content {
+    flex-grow: 0;
+    flex-wrap: wrap;
+    flex-direction: column;
+    max-width: calc(100% - 72px);
+    margin-right: 8px;
+  }
+
+  .input-box button {
+    margin: 0px 8px;
+    height: 28px;
+  }
+
+  .inputbar>.options {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0px 8px;
+    border-top: 0px;
+  }
+
+
 }</style>
