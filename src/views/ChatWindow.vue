@@ -65,9 +65,6 @@ export default {
                     this.toupdate = true;
                 }
             });
-
-
-
         }, eemoji() {
             this.showemoji = !this.showemoji
         }, getemoji(e) {
@@ -108,7 +105,7 @@ export default {
         }, adjustTextareaHeight() {
             if (window.innerWidth < 600) {
                 this.textareaRef.style.height = '28px';
-                this.textareaRef.style.height = this.textareaRef.scrollHeight + 'px';
+                this.textareaRef.style.height = this.textareaRef.scrollHeight - 8 + 'px';
 
                 if (parseInt(this.textareaRef.style.height) > 200) {
                     this.textareaRef.style.height = '200px';
@@ -130,9 +127,7 @@ export default {
     }, mounted() {
         this.textareaRef = this.$refs.textarea;
         this.textareaRef.addEventListener('input', this.adjustTextareaHeight);
-        // getmsg(currentuin);
-        this.tobuttom();
-        //console.log("初始渲染并滚动到底部理论完成")
+
         watch(() => this.contactor.uin, (newValue, oldValue) => {
             if (getmsg(newValue).length) {
                 this.messagechain = getmsg(this.contactor.uin);
@@ -151,10 +146,10 @@ export default {
         setTimeout(this.tobuttom, 0)
     }, updated() {
         if (this.toupdate) {
-            this.tobuttom();
+            setTimeout(this.tobuttom, 0)
             this.toupdate = false;
         }
-        setTimeout(this.tobuttom, 0)
+        
     }, components: {
         MdPreview
     }

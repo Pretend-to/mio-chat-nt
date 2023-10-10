@@ -173,7 +173,7 @@ export default {
   }
 
   .input-content textarea {
-    height: 28px;
+    height: 24px;
     width: 100%;
     background-color: rgb(255, 255, 255);
   }
@@ -193,7 +193,7 @@ export default {
 
   .inputbar>.options {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     padding: 0px 8px;
     border-top: 0px;
   }
