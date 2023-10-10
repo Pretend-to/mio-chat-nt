@@ -1,0 +1,5 @@
+{   
+    "baseurl":"后端地址(注意http(s))", 
+    "resetprompt":"重置会话",
+    "loadprompt":"加载预设 "
+}
