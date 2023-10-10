@@ -1,15 +1,3 @@
-@font-face {
-    font-family: Genshin-zh;
-    src: url('./fonts/hk4e_zh-cn.ttf') format('truetype');
-}
-@font-face {
-    font-family: xihei-zh;
-    src: url('./fonts/STXIHEI.TTF') format('truetype');
-}
-@font-face {
-    font-family: heiti-zh;
-    src: url('./fonts/simhei.ttf') format('truetype');
-}
 
 body {
     overflow: hidden;
@@ -44,7 +32,6 @@ body {
     flex-direction: column;
     flex-grow: 1;
     width: 200px;
-    min-width: 200px;
     max-width: 200px;
     border-left: 1px solid rgba(161, 154, 154, 0.626);
     border-right: 1px solid rgba(161, 154, 154, 0.626);
@@ -66,7 +53,6 @@ body {
     flex-direction: row;
     background-color: rgb(255, 255, 255);
     flex: 0 1 32px;
-    max-width: 200px;
     border-right: 0px;
     padding: 22px 12px 8px 12px;
     align-items: stretch;
@@ -83,12 +69,11 @@ body {
 }
 
 input#tosearch {
+    width: calc(100% - 18px);
     margin-top: 3px;
-    flex-grow: 1;
     padding-left: 5px;
     height: 18px;
     background-color: transparent;
-    width: 70%;
     border: 0px;
 }
 
@@ -106,9 +91,9 @@ button#searchButton {
 }
 
 .search {
+    flex-grow: 1;
     border-radius: 5px;
     background-color: rgb(245 245, 245);
-    max-width: 77%;
     height: 25px;
     display: flex;
     padding: 2px 4px;
@@ -344,25 +329,26 @@ button#addcont {
 }
 
 
-.info{
+.info {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    flex : 0 0 140px;
+    flex: 0 0 calc(100% - 42px);;
     flex-wrap: wrap;
-    max-width: 140px;
+    width: calc(100% - 42px);
+    min-width: calc(100% - 42px);
 }
-
 
 .info #time{
     color: gray;
     font-size: 10px;
-    flex-basis: 62px;
+    flex-grow: 1;
     text-align: right;
 }
 
 .info #msgctt{
-    max-width: 100%;
+    flex-basis: 100%;
+    padding-right: 16px;
     color: gray;
     font-size: 10px;
     margin-left: 8px;

@@ -18,4 +18,16 @@ export default{
   <RouterView />
 </template>
 
+<style>
+@media (max-width: 600px) {
+  #sidebar,
+  #chatwindow {
+    display: none;
+  }
+  #friendlists {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
 
+}
+</style>

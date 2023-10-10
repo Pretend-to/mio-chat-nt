@@ -22,7 +22,8 @@ export default {
     methods: {
         startchat() {
             this.contactor.editing = false
-            window.location.pathname = "/";
+            const element = document.querySelector("#unchoosen");
+            element.click();
         },
         saveset(e,smb){
             updatesb(smb)
