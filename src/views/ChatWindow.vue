@@ -281,4 +281,10 @@ export default {
 svg:hover {
     fill: rgb(0, 153, 255);
 }
+
+@media (max-width: 600px) {
+    #chatwindow{
+        height: 100%;
+    }
+}
 </style>
