@@ -535,7 +535,7 @@ emoji-picker {
     flex: 1;
     box-sizing: border-box;
     overflow: auto;
-    padding: 4px 8px;
+    padding: 0 0 ;
 }
 .content img{
     margin: none;
