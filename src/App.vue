@@ -4,15 +4,21 @@ import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
 import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
+import { initcontactor } from '@/scripts/function';
+import { makelist } from '@/scripts/middleware';
+
 
 
 export default {
   data() {
+    const list = makelist();
+
     const windowWidth = 0;
     const one = useContactorstore();
     const showWindow = false;
     const showOther = true;
     return {
+      list,
       one,
       windowWidth,
       showWindow,
@@ -49,6 +55,15 @@ export default {
           }
       }
     })
+
+    if(this.windowWidth < 600){
+      this.list.forEach(element => {
+        if(!element.lasttime && !this.one.inited.includes(element.uin)){
+          initcontactor(element)
+          this.one.inited.push(element.uin)
+        }
+      });
+    }
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize); // 在组件销毁前移除事件监听
