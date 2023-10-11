@@ -1,12 +1,14 @@
 ![Alt text](github/logo.gif)
-  仿 qqnt 的 gpt webUI，由 [@lss233](https://github.com/lss233) 的优秀开源项目 [chatgpt-mirai-qq-bot
-](https://github.com/lss233/chatgpt-mirai-qq-bot) 提供后端支持。
+
 
 
 | ![网页端](https://img.shields.io/badge/-网页端-E2CDBC?style=for-the-badge)                     | ![移动端](https://img.shields.io/badge/-移动端-E2CDBC?style=for-the-badge)                   | 
 |------------------------------|------------------------------|
-| ![image](https://pi.fcip.top:4049/images/web.png) | ![image](https://pi.fcip.top:4049/images/mobile.png) |
+| ![image](github/web.png) | ![image](github/mobile.png) |
 
+
+## 简介
+仿 qqnt 的 gpt webUI，由 [@lss233](https://github.com/lss233) 的优秀开源项目 [chatgpt-mirai-qq-bot](https://github.com/lss233/chatgpt-mirai-qq-bot) 提供后端支持。
 
 ## 现有功能
 - markdown 支持
