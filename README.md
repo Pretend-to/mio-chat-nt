@@ -5,7 +5,7 @@
 
 | ![网页端](https://img.shields.io/badge/-网页端-E2CDBC?style=for-the-badge)                     | ![移动端](https://img.shields.io/badge/-移动端-E2CDBC?style=for-the-badge)                   | 
 |------------------------------|------------------------------|
-| ![image](github/web.png) | ![image](github/mobile.png) |
+| ![image](https://pi.fcip.top:4049/images/web.png) | ![image](https://pi.fcip.top:4049/images/mobile.png) |
 
 
 ## 现有功能
