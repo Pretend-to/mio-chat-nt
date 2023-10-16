@@ -5,6 +5,7 @@ import { watch } from 'vue'; // 或 import { watch } from 'pinia';
 import { useContactorstore } from '@/stores/contactor'
 import { MdPreview } from 'md-editor-v3';
 import { sentmsg, getmsg, init, getinfo } from '@/scripts/middleware';
+import { makeTips,denied } from '@/scripts/tipsappend.js'
 import { getmain } from '../scripts/stroge';
 import { initcontactor } from '../scripts/function';
 
@@ -23,7 +24,7 @@ export default {
             showemoji: false,
             main,
             info,
-            textareaRef: null
+            textareaRef: null,
 
         }
     }, methods: {
@@ -83,7 +84,8 @@ export default {
         }, updateCursorPosition() {
             const textarea = this.$refs.textarea;
             this.cursorPosition = textarea.selectionStart;
-        }, tobuttom() {
+        }, tobuttom(clicked) {
+            if (clicked) makeTips("info","已滑至底部")
             const chatWindow = this.$refs.chatWindow;
             //console.log("滑动条位置顶部与元素顶部间距："+ chatWindow.scrollTop + "元素高度" + chatWindow.scrollHeight)
             chatWindow.scrollTop = chatWindow.scrollHeight
@@ -93,13 +95,13 @@ export default {
             localStorage.removeItem(name);
             this.messagechain = [];
             this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
-            console.log("已重置初始化状态")
+            makeTips("info","已删除聊天记录")
             this.toupdate = true;
             init();
         }, reset() {
             const sb = getinfo(this.contactor.uin)
             initcontactor(sb)
-
+            makeTips("info","已重置好友人格")
         }, tolist() {
             this.contactor.uin = 10000
         }, adjustTextareaHeight() {
@@ -115,6 +117,13 @@ export default {
             // 使用正则表达式检查用户输入是否只包含换行符和空格
             const regex = /^[ \n]+$/;
             return !regex.test(input);
+        }, pushtip(type, info) {
+            this.tips.push({
+                info: info,
+                type: type
+            })
+        },waiting(){
+            denied();
         }
     }, computed: {
         showwindow() {
@@ -131,7 +140,7 @@ export default {
         watch(() => this.contactor.uin, (newValue, oldValue) => {
             if (getmsg(newValue).length) {
                 this.messagechain = getmsg(this.contactor.uin);
-                this.tobuttom();
+                setTimeout(this.tobuttom, 0)
                 console.log(getmsg(newValue).length)
             } else if (this.contactor.inited.includes(newValue)) {
                 console.log("未找到聊天记录，但已进行过初始化")
@@ -149,14 +158,14 @@ export default {
             setTimeout(this.tobuttom, 0)
             this.toupdate = false;
         }
-        
     }, components: {
-        MdPreview
+        MdPreview,
     }
 }
 </script>
 
 <template>
+    <TipAppend :tips="tips"></TipAppend>
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
             <div class="return" @click="tolist">
@@ -169,8 +178,8 @@ export default {
             </div>
             <div class="somebody">{{ sbinfo.name }}</div>
             <div class="options">
-                <div id="system">
-                    <div class="button" id="min">
+                <div id="system" >
+                    <div class="button" @click="waiting()" id="min">
                         <svg t="1696841764189" class="icon" viewBox="0 0 1024 1024" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" p-id="4521" width="16" height="16">
                             <path
@@ -178,7 +187,7 @@ export default {
                                 fill="#333333" p-id="4522"></path>
                         </svg>
                     </div>
-                    <div class="button" id="max">
+                    <div class="button" @click="waiting()" id="max">
                         <svg t="1696841744276" class="icon" viewBox="0 0 1024 1024" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" p-id="4306" width="16" height="16">
                             <path
@@ -186,7 +195,7 @@ export default {
                                 fill="#333333" p-id="4307"></path>
                         </svg>
                     </div>
-                    <div class="button" id="close">
+                    <div class="button" @click="waiting()" id="close">
                         <svg t="1696841669425" class="icon" viewBox="0 0 1024 1024" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" p-id="4127" width="16" height="16">
                             <path
@@ -195,7 +204,7 @@ export default {
                         </svg>
                     </div>
                 </div>
-                <div id="share">
+                <div id="share" @click="waiting()">
                     <svg t="1696841917190" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="4742">
                         <path
@@ -239,7 +248,7 @@ export default {
                 </div>
                 <div class="bu-emoji">
                     <p id="ho-emoji">滑到底部</p>
-                    <svg @click="tobuttom" t="1695147151930" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                    <svg @click="tobuttom(1)" t="1695147151930" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="4438" width="20" height="20">
                         <path
                             d="M896 864H128c-17.066667 0-32 14.933333-32 32s14.933333 32 32 32h768c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32zM488.533333 727.466667c6.4 6.4 14.933333 8.533333 23.466667 8.533333s17.066667-2.133333 23.466667-8.533333l213.333333-213.333334c12.8-12.8 12.8-32 0-44.8-12.8-12.8-32-12.8-44.8 0l-157.866667 157.866667V170.666667c0-17.066667-14.933333-32-32-32s-34.133333 14.933333-34.133333 32v456.533333L322.133333 469.333333c-12.8-12.8-32-12.8-44.8 0-12.8 12.8-12.8 32 0 44.8l211.2 213.333334z"
