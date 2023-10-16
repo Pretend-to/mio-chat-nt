@@ -1,5 +1,6 @@
 import 'md-editor-v3/lib/preview.css';
 import './assets/style.css'
+import './assets/tips.css'
 import { init } from './scripts/middleware'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
