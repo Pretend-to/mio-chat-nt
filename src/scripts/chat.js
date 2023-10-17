@@ -1,5 +1,9 @@
 import { getmain,getcfg } from './stroge.js';
-
+let jieguo = {
+  message:[],
+  voice:[],
+  image:[]
+}
 
 function config(){
     const a = getmain();
@@ -27,7 +31,8 @@ export function getRequest(message,session_id) {
       headers:{
         'Content-Type':'application/json'
       },
-      body:JSON.stringify(data)
+      body:JSON.stringify(data),
+
     })
     .then(response => {
       if(response.ok){
@@ -39,12 +44,47 @@ export function getRequest(message,session_id) {
   })
 }
 
-export function getResponse(requestID) {
-  return new Promise((resolve,reject) => {
-    
-  })
-}
+export async function getResponse(requestID) {
+  const cfg = config();
+  const url = `${cfg.url}/v2/chat/response?request_id=${requestID}`;
+  let data = {
+      result: 'SUCCESS',
+      message: [],
+      voice: [],
+      image: []
+  }
+  while (data.result == 'SUCCESS') {
 
+      try {
+          const response = await fetch(url);
+
+          if (!response.ok) {
+              throw new Error('Failed to get response');
+          }
+
+          data = await response.json();
+          // console.log(data);
+
+          if(data.message.length > 0) {data.message.forEach(element => {
+              jieguo.message.push(element)
+          });}
+
+          if(data.voice.length > 0) {data.voice.forEach(element => {
+              jieguo.voice.push(element)
+              console.log("添加音频")
+          });}
+          if(data.image.length > 0) {data.image.forEach(element => {
+              jieguo.image.push(element)
+          });}
+
+
+      } catch (error) {
+          console.error('Error:', error);
+          throw error;
+      }
+  }
+  return jieguo;
+}
 
 export function commitmessage(message, session_id) {
   return new Promise((resolve, reject) => {
