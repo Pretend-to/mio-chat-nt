@@ -140,7 +140,7 @@ export default {
 
   #app {
     border: none;
-    border-radius: none;
+    border-radius: 0px;
   }
 
   body {
@@ -165,7 +165,7 @@ export default {
   }
 
   .input-box {
-
+    margin-bottom: 4px;
     display: flex;
     flex-direction: row;
     align-items: flex-end;
@@ -183,7 +183,7 @@ export default {
     flex-wrap: wrap;
     flex-direction: column;
     max-width: calc(100% - 72px);
-    margin-right: 8px;
+    margin: 0px 8px;
   }
 
   .input-box button {
@@ -194,9 +194,7 @@ export default {
   .inputbar>.options {
     display: flex;
     justify-content: space-between;
-    padding: 0px 8px;
+    padding: 0px 16px;
     border-top: 0px;
   }
-
-
 }</style>

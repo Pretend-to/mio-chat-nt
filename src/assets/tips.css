@@ -1,8 +1,8 @@
 
 .fade-in {
+    z-index: 99999;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(0, 0, 0, 0.505);
     background-color: rgb(247, 247, 247);
     border-radius: 100px;
     position: fixed;
@@ -15,7 +15,7 @@
     left: 50%;
     /* 将元素的左边缘定位到视口的水平中心 */
     transform: translateX(-50%);
-    /* 使用负值的 translateX 将元素向左移动自身宽度的一半 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
 }
 
 @keyframes fade {

@@ -14,7 +14,7 @@
             "uin":10001
         },
         {
-            "name":"傻逼",
+            "name":"笑川酱❤️",
             "title":"孙笑川",
             "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1906592980",
             "important":true,
@@ -47,6 +47,12 @@
             "avatar":"https://pi.fcip.top:4049/images/sb.gif",  
             "important":false,
             "uin":10006
+        },{
+            "name":"rosbot",
+            "title":"语音助手",
+            "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1467106015",  
+            "important":false,
+            "uin":10007
         }
     ]
 }

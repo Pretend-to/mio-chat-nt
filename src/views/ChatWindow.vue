@@ -5,7 +5,7 @@ import { watch } from 'vue'; // 或 import { watch } from 'pinia';
 import { useContactorstore } from '@/stores/contactor'
 import { MdPreview } from 'md-editor-v3';
 import { sentmsg, getmsg, init, getinfo } from '@/scripts/middleware';
-import { makeTips,denied } from '@/scripts/tipsappend.js'
+import { makeTips, denied } from '@/scripts/tipsappend.js'
 import { getmain } from '../scripts/stroge';
 import { initcontactor } from '../scripts/function';
 
@@ -85,7 +85,7 @@ export default {
             const textarea = this.$refs.textarea;
             this.cursorPosition = textarea.selectionStart;
         }, tobuttom(clicked) {
-            if (clicked) makeTips("info","已滑至底部")
+            if (clicked) makeTips("info", "已滑至底部")
             const chatWindow = this.$refs.chatWindow;
             //console.log("滑动条位置顶部与元素顶部间距："+ chatWindow.scrollTop + "元素高度" + chatWindow.scrollHeight)
             chatWindow.scrollTop = chatWindow.scrollHeight
@@ -95,13 +95,13 @@ export default {
             localStorage.removeItem(name);
             this.messagechain = [];
             this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
-            makeTips("info","已删除聊天记录")
+            makeTips("info", "已删除聊天记录")
             this.toupdate = true;
             init();
         }, reset() {
             const sb = getinfo(this.contactor.uin)
             initcontactor(sb)
-            makeTips("info","已重置好友人格")
+            makeTips("info", "已重置好友人格")
         }, tolist() {
             this.contactor.uin = 10000
         }, adjustTextareaHeight() {
@@ -116,13 +116,14 @@ export default {
         }, isValidInput(input) {
             // 使用正则表达式检查用户输入是否只包含换行符和空格
             const regex = /^[ \n]+$/;
-            return !regex.test(input);
+            const result = !regex.test(input);
+            return result
         }, pushtip(type, info) {
             this.tips.push({
                 info: info,
                 type: type
             })
-        },waiting(){
+        }, waiting() {
             denied();
         }
     }, computed: {
@@ -165,7 +166,6 @@ export default {
 </script>
 
 <template>
-    <TipAppend :tips="tips"></TipAppend>
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
             <div class="return" @click="tolist">
@@ -178,7 +178,7 @@ export default {
             </div>
             <div class="somebody">{{ sbinfo.name }}</div>
             <div class="options">
-                <div id="system" >
+                <div id="system">
                     <div class="button" @click="waiting()" id="min">
                         <svg t="1696841764189" class="icon" viewBox="0 0 1024 1024" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" p-id="4521" width="16" height="16">
@@ -227,6 +227,7 @@ export default {
                     <div class="content">
                         <MdPreview editorId="preview-only" :modelValue="item.text" />
                         <img v-for="picture of item.pic" :src="picture">
+                        <div class="loader" v-if="isLoading"></div>
                     </div>
                 </div>
             </div>
@@ -274,6 +275,24 @@ export default {
                         <path
                             d="M426.666667 736c17.066667 0 32-14.933333 32-32V490.666667c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v213.333333c0 17.066667 14.933333 32 32 32zM597.333333 736c17.066667 0 32-14.933333 32-32V490.666667c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v213.333333c0 17.066667 14.933333 32 32 32z"
                             p-id="4765"></path>
+                    </svg>
+                </div>
+                <div class="bu-emoji">
+                    <p id="ho-emoji">语音</p>
+                    <svg  @click="waiting" t="1697536440024" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="7282" width="24" height="24">
+                        <path
+                            d="M544 851.946667V906.666667a32 32 0 0 1-64 0v-54.72C294.688 835.733333 149.333333 680.170667 149.333333 490.666667v-21.333334a32 32 0 0 1 64 0v21.333334c0 164.949333 133.717333 298.666667 298.666667 298.666666s298.666667-133.717333 298.666667-298.666666v-21.333334a32 32 0 0 1 64 0v21.333334c0 189.514667-145.354667 345.066667-330.666667 361.28zM298.666667 298.56C298.666667 180.8 394.165333 85.333333 512 85.333333c117.781333 0 213.333333 95.541333 213.333333 213.226667v192.213333C725.333333 608.533333 629.834667 704 512 704c-117.781333 0-213.333333-95.541333-213.333333-213.226667V298.56z m64 0v192.213333C362.666667 573.12 429.557333 640 512 640c82.496 0 149.333333-66.805333 149.333333-149.226667V298.56C661.333333 216.213333 594.442667 149.333333 512 149.333333c-82.496 0-149.333333 66.805333-149.333333 149.226667z"
+                            p-id="7283"></path>
+                    </svg>
+                </div>
+                <div class="bu-emoji">
+                    <p id="ho-emoji">模型选择</p>
+                    <svg @click="waiting"  t="1697536322502" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="6223" width="24" height="24">
+                        <path
+                            d="M618.666667 106.666667H405.333333v85.333333h64v42.666667H149.333333v661.333333h725.333334V234.666667H554.666667V192h64V106.666667zM234.666667 810.666667V320h554.666666v490.666667H234.666667zM21.333333 448v234.666667h85.333334V448H21.333333z m896 0v234.666667h85.333334V448h-85.333334z m-469.333333 64h-106.666667v106.666667h106.666667v-106.666667z m234.666667 0h-106.666667v106.666667h106.666667v-106.666667z"
+                            p-id="6224"></path>
                     </svg>
                 </div>
             </div>
@@ -338,6 +357,30 @@ svg:hover {
     fill: rgb(0, 153, 255);
 }
 
+
+.loader {
+    width: 10px;
+    padding: 4px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgb(0, 153, 255);
+    --_m:
+        conic-gradient(#0000 10%, #000),
+        linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: l3 1s infinite linear;
+    position: absolute;
+}
+
+@keyframes l3 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
 .return {
     display: none;
 }
@@ -384,5 +427,4 @@ svg:hover {
     textarea {
         overflow-y: auto
     }
-}
-</style>
+}</style>

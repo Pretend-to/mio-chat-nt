@@ -1,4 +1,4 @@
-import { commitmessage } from './chat.js'
+import { commitmessage,getResponse,getRequest } from './chat.js'
 import { getmain, savemain, gethistory, savehistory,setconfig,getcfg } from './stroge.js'
 import { generateRandomId } from './stroge.js';
 import { initcontactor,reset } from './function.js';
@@ -69,6 +69,8 @@ export async function sentmsg(msg, uin) {
             });
     });
 }
+
+
 
 export function systemchat(msg, uin) {
     return new Promise((resolve, reject) => {
