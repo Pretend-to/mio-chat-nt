@@ -4,6 +4,7 @@
         <img class="bkg" src="@/assets/setting.svg" alt="background">
         <div id="head"></div>
         <div id="body">
+            <img id="avatar" :src="user.avatar" alt="">
             <div v-if="!devsets" id="form_submit">
                 <div id="c-name" class="form">
                     用户名：<input type="text" v-model="user.name" />
@@ -14,7 +15,6 @@
                 <div id="c-avatar" class="form">
                     头像：<input type="text" v-model="user.avatar">
                 </div>
-                <img id="avatar" :src="user.avatar" alt="">
 
                 <div id="c-baseurl" class="form">
                     baseurl：<input type="text" v-model="cfg.baseurl" />
@@ -273,7 +273,7 @@ img.bkg{
         display: block;
         z-index: 2000000;
         position: absolute;
-        top: 16px;
+        top: -75px;
         border-radius: 50%;
         right: 50%;
         transform: translateX(50%);
@@ -306,7 +306,7 @@ img.bkg{
     .config #head {
         padding: 36px 0 0 0;
         width: 100%;
-        flex: 0 1 200px;
+        flex: 0 1 150px;
 
     }
 
@@ -327,7 +327,7 @@ img.bkg{
     }
 
     .form:nth-child(1) {
-        margin-top: 200px;
+        margin-top: 100px;
 
     }
 
