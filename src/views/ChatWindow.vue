@@ -5,7 +5,7 @@ import { watch } from 'vue'; // 或 import { watch } from 'pinia';
 import { useContactorstore } from '@/stores/contactor'
 import { MdPreview } from 'md-editor-v3';
 import { sentmsg, getmsg, init, getinfo } from '@/scripts/middleware';
-import { makeTips, denied } from '@/scripts/tipsappend.js'
+import makeTips from '@/scripts/tipsappend.js'
 import { getmain } from '../scripts/stroge';
 import { initcontactor } from '../scripts/function';
 
@@ -85,7 +85,7 @@ export default {
             const textarea = this.$refs.textarea;
             this.cursorPosition = textarea.selectionStart;
         }, tobuttom(clicked) {
-            if (clicked) makeTips("info", "已滑至底部")
+            if (clicked) makeTips.info("已滑至底部")
             const chatWindow = this.$refs.chatWindow;
             //console.log("滑动条位置顶部与元素顶部间距："+ chatWindow.scrollTop + "元素高度" + chatWindow.scrollHeight)
             chatWindow.scrollTop = chatWindow.scrollHeight
@@ -95,13 +95,13 @@ export default {
             localStorage.removeItem(name);
             this.messagechain = [];
             this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
-            makeTips("info", "已删除聊天记录")
+            makeTips.info("已删除聊天记录")
             this.toupdate = true;
             init();
         }, reset() {
             const sb = getinfo(this.contactor.uin)
             initcontactor(sb)
-            makeTips("info", "已重置好友人格")
+            makeTips.info("已重置好友人格")
         }, tolist() {
             this.contactor.uin = 10000
         }, adjustTextareaHeight() {
@@ -124,7 +124,7 @@ export default {
                 type: type
             })
         }, waiting() {
-            denied();
+            makeTips.warn("此功能尚未开放");
         }
     }, computed: {
         showwindow() {
