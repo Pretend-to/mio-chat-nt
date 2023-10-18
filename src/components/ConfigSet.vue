@@ -69,6 +69,18 @@ export default {
                     location.reload(); // 刷新页面
                 },1000)
                 localStorage.clear(); // 清除本地存储数据
+
+                // 获取当前页面所有的 Cookie
+                var cookies = document.cookie.split(";");
+
+                // 遍历所有 Cookie，将它们的过期时间设置为过去的时间
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i];
+                    var eqPos = cookie.indexOf("=");
+                    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                }
+
             } else {
                 // 用户点击了取消按钮
                 makeTips("info","操作已取消")
