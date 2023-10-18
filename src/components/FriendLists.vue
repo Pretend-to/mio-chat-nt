@@ -2,7 +2,7 @@
 import { watch } from 'vue';
 import { makelist } from '../scripts/middleware';
 import { useContactorstore } from '../stores/contactor';
-import { makeTips,denied } from '@/scripts/tipsappend.js'
+import makeTips from '@/scripts/tipsappend.js'
 
 
 export default {
@@ -36,7 +36,7 @@ export default {
             const index = this.list.findIndex(item => item.uin === uin);
             return index;
         }, addone() {
-            denied();
+            makeTips.warn("此功能尚未开放")
         }
     },
     mounted() {

@@ -42,7 +42,7 @@
 </template>
   
 <script>
-import { makeTips, denied } from '@/scripts/tipsappend.js'
+import makeTips from '@/scripts/tipsappend.js'
 
 
 export default {
@@ -64,7 +64,7 @@ export default {
         remake(count) {
             var result = confirm("警告: 此操作将会重置所有缓存(包含聊天记录)，确定要执行此操作吗？");
             if (result) {
-                makeTips("info","操作成功，即将刷新")
+                makeTips.info("操作成功，即将刷新")
                 setTimeout(function(){
                     location.reload(); // 刷新页面
                 },1000)
@@ -83,7 +83,7 @@ export default {
 
             } else {
                 // 用户点击了取消按钮
-                makeTips("info","操作已取消")
+                makeTips.info("操作已取消");
             }
         }
     },
