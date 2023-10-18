@@ -166,7 +166,6 @@ export default {
 </script>
 
 <template>
-    <TipAppend :tips="tips"></TipAppend>
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
             <div class="return" @click="tolist">
