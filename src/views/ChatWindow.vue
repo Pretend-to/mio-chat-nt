@@ -9,6 +9,7 @@ import makeTips from '@/scripts/tipsappend.js'
 import { getmain } from '../scripts/stroge';
 import { initcontactor } from '../scripts/function';
 import ChooseList from '@/components/ChooseList.vue'
+import { getResponse,getRequest } from '../scripts/chat';
 
 export default {
     data() {

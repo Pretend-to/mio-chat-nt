@@ -30,7 +30,7 @@ export default {
             //console.log("当前选中的引索值：" + id)
             this.list[id].active = "active"
             this.contactor.uin = item.uin;
-            console.log(this.contactor.uin)
+            console.log("BBABABBABABABAB" + this.contactor.uin)
         },
         getindex(uin) {
             const index = this.list.findIndex(item => item.uin === uin);
