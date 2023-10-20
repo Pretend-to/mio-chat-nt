@@ -41,3 +41,12 @@ export function getcfg(){
     const storedData = JSON.parse(localStorage.getItem('config'));
     return storedData;
 }
+
+export function setcontactor(cfg){
+    localStorage.setItem("contactor", JSON.stringify(cfg));
+}
+
+export function getcontactor(){
+    const storedData = JSON.parse(localStorage.getItem('contactor'));
+    return storedData;
+}

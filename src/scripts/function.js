@@ -1,5 +1,7 @@
 import { systemchat, getconfig } from "./middleware";
 
+
+
 export function reset(uin) {
     systemchat(config.resetprompt, uin);
 }

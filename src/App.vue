@@ -6,7 +6,7 @@ import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
 import { initcontactor } from '@/scripts/function';
 import { makelist } from '@/scripts/middleware';
-
+import { setcontactor,getcontactor } from './scripts/stroge';
 
 
 export default {
@@ -26,6 +26,11 @@ export default {
     }
   },
   mounted() {
+    let store = getcontactor()
+    if (store){
+        this.one = store
+        console.log(store)
+      }
     this.getWindowWidth(); // 获取初始窗口宽度
     window.addEventListener('resize', this.handleResize); // 监听窗口大小变化
     watch(() => this.windowWidth, (newValue, oldValue) => {
@@ -41,6 +46,8 @@ export default {
       }
     })
     watch(() => this.one.uin, (newValue, oldValue) => {
+      setcontactor(this.one)
+      console.log("update store")
       if (this.windowWidth < 600) {
         console.log(`${newValue},${oldValue}`)
         if (newValue != 10000) {
