@@ -85,18 +85,6 @@ export function systemchat(msg, uin) {
     });
   }  
 
-export async function getVoices(uin){
-    const data = await systemchat("切换语音 XXX","100000")
-    const voiceIds = data[0].match(/(?:\b)[a-z]+(?:\b)/g);
-    return voiceIds;
-}
-
-export function getModels(uin,model){
-    const data = systemchat("切换模型 XXX",uin)
-    systemchat("切换模型 " + model)
-    const modelIds = data.match(/(?:\')(.*?)(?:\')/g).map(str => str.replace(/\'/g, ''));
-    return modelIds;
-}
 
 export function init(uin) {
     const b = getcfg()

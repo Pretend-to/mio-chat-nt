@@ -1,16 +1,20 @@
 import { getmsg } from "./middleware";
+import { systemchat, getconfig } from "./middleware";
+
 
 class Contactor {
-    constructor({info = {}, lastchat = {}} = {}) {
+    constructor(info ) {
         this.uin = info.uin || '';
         this.name = info.name || '';
         this.avatar = info.avatar || '';
         this.important = info.important || false;
         this.title = info.title || '';
+        this.history = getmsg(info.uin);
+        this.lastchat = this.history[this.history.length - 1] 
         this.lasttime = this.time(lastchat?.time) || '';
         this.content = this.content(lastchat?.text) || '';
         this.active = false;
-        this.history = getmsg(info.uin);
+        this.toinit = true;
     }
 
     time(last) {
@@ -23,6 +27,7 @@ class Contactor {
         const timeDiff = currentTime - lastTime;
         
         if (timeDiff < 24 * 60 * 60 * 1000) {
+            this.toinit = false
             // 小于24小时，返回 xx:xx (小时:分钟)
             const hours = lastTime.getHours().toString().padStart(2, '0');
             const minutes = lastTime.getMinutes().toString().padStart(2, '0');
@@ -51,6 +56,25 @@ class Contactor {
             // 长度大于10，返回前8位并补充2位省略号
             return last;
         }
+    }
+
+    init() {
+
+        const config = getconfig()
+    
+        const msg = `${config.loadprompt}${this.title}`
+    
+        console.log(msg)
+    
+        systemchat(msg, this.uin)
+            .then(result => {
+                console.log('操作成功:', result);
+                // 在这里处理操作成功的结果
+            })
+            .catch(error => {
+                console.error('操作失败:', error);
+                // 在这里处理操作失败的错误
+            });
     }
 }
 
