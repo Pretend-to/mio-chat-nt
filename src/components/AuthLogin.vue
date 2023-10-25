@@ -11,16 +11,21 @@
 </template>
 
 <script>
+import { auth } from '@/scripts/middleware';
+import makeTips from '@/scripts/tipsappend.js'
+
 export default{
-    data(){
-        return
-    },
     emits:["get"],
     methods:{
         getcode(){
-            const code = this.$refs.code.value
-            this.$refs.code.value = ''
-            this.$emit.get(code)
+            const value = this.$refs.code.value
+            if(value){
+                this.$refs.code.value = ''
+                this.$emit('get',auth(value))
+            }else{
+                makeTips.warn('输入不得为空')
+            }
+
         }
     }
 }

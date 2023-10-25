@@ -1,3 +1,5 @@
+import localforage from 'localforage';
+
 export function getmain(){
     const storedData = JSON.parse(localStorage.getItem('main'));
     return storedData;
@@ -48,5 +50,14 @@ export function setcontactor(cfg){
 
 export function getcontactor(){
     const storedData = JSON.parse(localStorage.getItem('contactor'));
+    return storedData;
+}
+
+export function setcode(cfg){
+    localStorage.setItem("code", cfg);
+}
+
+export function getcode(){
+    const storedData = localStorage.getItem('code');
     return storedData;
 }
