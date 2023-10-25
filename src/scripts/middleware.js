@@ -1,10 +1,11 @@
 import { commitmessage,getResponse,getRequest } from './chat.js'
-import { getmain, savemain, gethistory, savehistory,setconfig,getcfg } from './stroge.js'
+import { getmain, savemain, gethistory, savehistory,setconfig,getcfg,setcode,getcode } from './stroge.js'
 import { generateRandomId } from './stroge.js';
 import { initcontactor,reset } from './function.js';
 import initJson from '@/assets/json/main.json'
 import initCfg from '@/assets/json/config.json'
 import Contactor from './friends.js';
+import { Buffer } from "buffer";
 
 export function getmsg(uin) {
     let history = gethistory(uin);
@@ -162,3 +163,22 @@ export function updatesb(sb){
     }
     upmain(current)
 }
+
+export function auth(code){
+    if (code){
+        const base64Encoded = Buffer.from(code).toString('base64');
+        if (base64Encoded != '6Ym05p2D56CB'){  //不等于 鉴权码
+            if (base64Encoded == 'NTI4MDcwMTcyNg=='){ //等于 神秘数字
+                setcode('root');
+                return 'root'
+            }else {
+                setcode('fucker')
+                return 'fucker'
+            }
+        }else{
+            setcode('user')
+            return 'user'
+        } 
+    }else return getcode();
+    }
+

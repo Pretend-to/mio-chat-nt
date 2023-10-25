@@ -54,10 +54,10 @@ export function getcontactor(){
 }
 
 export function setcode(cfg){
-    localStorage.setItem("code", JSON.stringify(cfg));
+    localStorage.setItem("code", cfg);
 }
 
 export function getcode(){
-    const storedData = JSON.parse(localStorage.getItem('code'));
+    const storedData = localStorage.getItem('code');
     return storedData;
 }
