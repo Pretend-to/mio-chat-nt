@@ -1,5 +1,6 @@
 <script>
 import { RouterView } from 'vue-router'
+import authlogin from './components/AuthLogin.vue'
 import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
 import { useContactorstore } from '@/stores/contactor';
@@ -78,7 +79,8 @@ export default {
   components: {
     sidebar,
     friendlist,
-    RouterView
+    RouterView,
+    authlogin
   }, methods: {
     getWindowWidth() {
       this.windowWidth = window.innerWidth; // 获取初始窗口宽度
@@ -92,13 +94,16 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth; // 更新当前网页宽度
+    },
+    authed() {
+      return false
     }
-
   }
 }
 </script>
 
 <template>
+  <authlogin v-show="authed()" />
   <sidebar v-if="showOther" />
   <friendlist v-if="showOther" />
   <RouterView v-if="showWindow" />
