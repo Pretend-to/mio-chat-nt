@@ -1,12 +1,14 @@
 <script>
 import { RouterView } from 'vue-router'
+import AuthLogin from './components/AuthLogin.vue';
 import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
 import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
 import { initcontactor } from '@/scripts/function';
-import { makelist } from '@/scripts/middleware';
-
+import { makelist,auth } from '@/scripts/middleware';
+import { setcontactor,getcontactor } from './scripts/stroge';
+import makeTips from '@/scripts/tipsappend.js'
 
 
 export default {
@@ -17,15 +19,34 @@ export default {
     const one = useContactorstore();
     const showWindow = false;
     const showOther = true;
+    const authinfo = 'fucker'
+    const showauth = true
     return {
       list,
       one,
       windowWidth,
       showWindow,
-      showOther
+      showOther,
+      authinfo,
+      showauth
     }
   },
   mounted() {
+    const currerntcode = auth()
+    console.log(currerntcode)
+    if (currerntcode ==  'root'){
+      makeTips.info("欢迎主人")
+      this.showauth = false
+    }else if(currerntcode == 'user'){
+      makeTips.info("欢迎使用")
+      this.showauth = false
+    }
+
+    let store = getcontactor()
+    if (store){
+        this.one = store
+        console.log(store)
+      }
     this.getWindowWidth(); // 获取初始窗口宽度
     window.addEventListener('resize', this.handleResize); // 监听窗口大小变化
     watch(() => this.windowWidth, (newValue, oldValue) => {
@@ -41,6 +62,8 @@ export default {
       }
     })
     watch(() => this.one.uin, (newValue, oldValue) => {
+      setcontactor(this.one)
+      console.log("update store")
       if (this.windowWidth < 600) {
         console.log(`${newValue},${oldValue}`)
         if (newValue != 10000) {
@@ -71,7 +94,8 @@ export default {
   components: {
     sidebar,
     friendlist,
-    RouterView
+    RouterView,
+    AuthLogin
   }, methods: {
     getWindowWidth() {
       this.windowWidth = window.innerWidth; // 获取初始窗口宽度
@@ -85,6 +109,19 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth; // 更新当前网页宽度
+    },
+    tryauth(status){
+      if (status === 'fucker'){
+        makeTips.warn("无效的鉴权码")
+      }else if(status === 'root'){
+        // 给最高权限
+        makeTips.info("欢迎使用")
+        this.showauth = false
+      }else{
+        //给一般权限
+        makeTips.info("欢迎使用")
+        this.showauth = false
+      }
     }
 
   }
@@ -92,6 +129,7 @@ export default {
 </script>
 
 <template>
+  <AuthLogin v-if="showauth" @get="tryauth"/>
   <sidebar v-if="showOther" />
   <friendlist v-if="showOther" />
   <RouterView v-if="showWindow" />

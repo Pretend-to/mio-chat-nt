@@ -53,8 +53,6 @@ export async function getResponse(requestID) {
       voice: [],
       image: []
   }
-  while (data.result == 'SUCCESS') {
-
       try {
           const response = await fetch(url);
 
@@ -63,28 +61,14 @@ export async function getResponse(requestID) {
           }
 
           data = await response.json();
-          // console.log(data);
-
-          if(data.message.length > 0) {data.message.forEach(element => {
-              jieguo.message.push(element)
-          });}
-
-          if(data.voice.length > 0) {data.voice.forEach(element => {
-              jieguo.voice.push(element)
-              console.log("添加音频")
-          });}
-          if(data.image.length > 0) {data.image.forEach(element => {
-              jieguo.image.push(element)
-          });}
-
 
       } catch (error) {
           console.error('Error:', error);
           throw error;
       }
-  }
-  return jieguo;
+  return data;
 }
+
 
 export function commitmessage(message, session_id) {
   return new Promise((resolve, reject) => {

@@ -4,10 +4,12 @@ import html2canvas from 'html2canvas'
 import { watch } from 'vue'; // 或 import { watch } from 'pinia';
 import { useContactorstore } from '@/stores/contactor'
 import { MdPreview } from 'md-editor-v3';
-import { sentmsg, getmsg, init, getinfo } from '@/scripts/middleware';
+import { sentmsg, getmsg, init, getinfo,getVoices,getModels } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
 import { getmain } from '../scripts/stroge';
 import { initcontactor } from '../scripts/function';
+import ChooseList from '@/components/ChooseList.vue'
+import { getResponse,getRequest } from '../scripts/chat';
 
 export default {
     data() {
@@ -15,6 +17,8 @@ export default {
         const messagechain = getmsg(contactor.uin);
         const main = getmain()
         const info = {}
+        const tochoose = { list:[] , chosen: null }
+        const showchose = false
         //console.log(contactor)
 
         return {
@@ -25,7 +29,11 @@ export default {
             main,
             info,
             textareaRef: null,
-
+            tochoose,
+            showchose,
+            isLoading : false,
+            configVoice:false,
+            configMidel:false
         }
     }, methods: {
         handleKeyDown(event) {
@@ -125,6 +133,21 @@ export default {
             })
         }, waiting() {
             makeTips.warn("此功能尚未开放");
+        },async voiceList(){
+            let data = ["关闭"]
+            const list = await getVoices()
+            this.tochoose.list = data.concat(list)
+            this.tochoose.chosen = 0
+            this.showchose = true
+        },async modelList(){
+            let data = ["关闭"]
+            const list = await getModels()
+            this.tochoose.list = data.concat(list)
+            this.tochoose.chosen = 0
+            this.showchose = true
+        },getList(data) {
+            this.showchose = false
+            const result = data.list[data.chosen]
         }
     }, computed: {
         showwindow() {
@@ -161,11 +184,13 @@ export default {
         }
     }, components: {
         MdPreview,
+        ChooseList
     }
 }
 </script>
 
 <template>
+    <ChooseList v-if="showchose" :tochoose="tochoose" @leave ="showchose = false" @save= "getList" />
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
             <div class="return" @click="tolist">
@@ -279,7 +304,7 @@ export default {
                 </div>
                 <div class="bu-emoji">
                     <p id="ho-emoji">语音</p>
-                    <svg  @click="waiting" t="1697536440024" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                    <svg  @click="voiceList" t="1697536440024" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="7282" width="24" height="24">
                         <path
                             d="M544 851.946667V906.666667a32 32 0 0 1-64 0v-54.72C294.688 835.733333 149.333333 680.170667 149.333333 490.666667v-21.333334a32 32 0 0 1 64 0v21.333334c0 164.949333 133.717333 298.666667 298.666667 298.666666s298.666667-133.717333 298.666667-298.666666v-21.333334a32 32 0 0 1 64 0v21.333334c0 189.514667-145.354667 345.066667-330.666667 361.28zM298.666667 298.56C298.666667 180.8 394.165333 85.333333 512 85.333333c117.781333 0 213.333333 95.541333 213.333333 213.226667v192.213333C725.333333 608.533333 629.834667 704 512 704c-117.781333 0-213.333333-95.541333-213.333333-213.226667V298.56z m64 0v192.213333C362.666667 573.12 429.557333 640 512 640c82.496 0 149.333333-66.805333 149.333333-149.226667V298.56C661.333333 216.213333 594.442667 149.333333 512 149.333333c-82.496 0-149.333333 66.805333-149.333333 149.226667z"
@@ -427,4 +452,5 @@ svg:hover {
     textarea {
         overflow-y: auto
     }
+
 }</style>

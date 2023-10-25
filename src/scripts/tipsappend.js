@@ -1,7 +1,7 @@
 function appendTip(tip) {
-    console.log(tip)
-  
-    var icon = tip.type == 'warn' ? `
+  console.log(tip)
+
+  var icon = tip.type == 'warn' ? `
       <svg  style="padding-left: 16px;" t="1697450824459" class="icon" viewBox="0 0 1024 1024"
                   version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6147" width="16" height="16">
                   <path
@@ -16,7 +16,7 @@ function appendTip(tip) {
                       fill="#00D66A" p-id="4008"></path>
               </svg>
       `
-    var html = `
+  var html = `
       <div ref="box" class="tipsbox">
           <div class="fade-in">
           ${icon}
@@ -26,34 +26,34 @@ function appendTip(tip) {
           </div>
       </div>
       `;
-  
-    document.body.insertAdjacentHTML("beforeend", html);
-  
-    // 延迟两秒后移除提示框
-    setTimeout(function () {
-      var box = document.querySelector('.tipsbox');
-      if (box) {
-        box.remove();
-      }
-    }, 2000);
-  
-  }
-  
-  const makeTips = {
-    warn: function (msg) {
-      const data = {
-        type: "warn",
-        info: msg
-      }
-      appendTip(data)
-    },
-    info: function (msg) {
-      const data = {
-        type: "info",
-        info: msg
-      }
-      appendTip(data)
+
+  document.body.insertAdjacentHTML("beforeend", html);
+
+  // 延迟两秒后移除提示框
+  setTimeout(function () {
+    var box = document.querySelector('.tipsbox');
+    if (box) {
+      box.remove();
     }
+  }, 2000);
+
+}
+
+const makeTips = {
+  warn: function (msg) {
+    const data = {
+      type: "warn",
+      info: msg
+    }
+    appendTip(data)
+  },
+  info: function (msg) {
+    const data = {
+      type: "info",
+      info: msg
+    }
+    appendTip(data)
   }
-  
-  export default makeTips;
+}
+
+export default makeTips;

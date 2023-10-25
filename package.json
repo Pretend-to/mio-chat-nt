@@ -8,8 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
+    "element-plus": "^2.4.1",
     "emoji-picker-element": "^1.18.3",
     "html2canvas": "^1.4.1",
+    "localforage": "^1.10.0",
     "md-editor-v3": "^4.7.0",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
