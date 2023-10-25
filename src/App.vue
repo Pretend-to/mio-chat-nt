@@ -1,12 +1,13 @@
 <script>
 import { RouterView } from 'vue-router'
+import AuthLogin from './components/AuthLogin.vue';
 import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
 import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
 import { initcontactor } from '@/scripts/function';
 import { makelist } from '@/scripts/middleware';
-import { setcontactor,getcontactor } from './scripts/stroge';
+import { setcontactor,getcontactor,setcode,getcode } from './scripts/stroge';
 
 
 export default {
@@ -78,7 +79,8 @@ export default {
   components: {
     sidebar,
     friendlist,
-    RouterView
+    RouterView,
+    AuthLogin
   }, methods: {
     getWindowWidth() {
       this.windowWidth = window.innerWidth; // 获取初始窗口宽度
@@ -92,6 +94,12 @@ export default {
     },
     handleResize() {
       this.windowWidth = window.innerWidth; // 更新当前网页宽度
+    },
+    unauthed() {
+      return true
+    },
+    getcode(code){
+      console.log(code)
     }
 
   }
@@ -99,6 +107,7 @@ export default {
 </script>
 
 <template>
+  <AuthLogin v-if="unauthed()" @get="getcode"/>
   <sidebar v-if="showOther" />
   <friendlist v-if="showOther" />
   <RouterView v-if="showWindow" />
