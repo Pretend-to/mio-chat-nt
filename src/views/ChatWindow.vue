@@ -126,11 +126,6 @@ export default {
             const regex = /^[ \n]+$/;
             const result = !regex.test(input);
             return result
-        }, pushtip(type, info) {
-            this.tips.push({
-                info: info,
-                type: type
-            })
         }, waiting() {
             makeTips.warn("此功能尚未开放");
         },async voiceList(){
@@ -185,7 +180,8 @@ export default {
     }, components: {
         MdPreview,
         ChooseList
-    }
+    },
+    emits:['tolist']
 }
 </script>
 

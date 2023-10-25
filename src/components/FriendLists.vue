@@ -30,6 +30,7 @@ export default {
             //console.log("当前选中的引索值：" + id)
             this.list[id].active = "active"
             this.contactor.uin = item.uin;
+            this.$emit('changed',item.uin)
             console.log("BBABABBABABABAB" + this.contactor.uin)
         },
         getindex(uin) {
@@ -49,7 +50,8 @@ export default {
             this.list[this.getindex(this.contactor.uin)].active = "active"
             this.contactor.newmsg = false;
         })
-    }
+    },
+    emits:["changed"]
 }
 </script>
 

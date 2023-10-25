@@ -42,11 +42,6 @@ export default {
       this.showauth = false
     }
 
-    let store = getcontactor()
-    if (store){
-        this.one = store
-        console.log(store)
-      }
     this.getWindowWidth(); // 获取初始窗口宽度
     window.addEventListener('resize', this.handleResize); // 监听窗口大小变化
     watch(() => this.windowWidth, (newValue, oldValue) => {
@@ -61,9 +56,8 @@ export default {
         this.showWindow = true
       }
     })
+
     watch(() => this.one.uin, (newValue, oldValue) => {
-      setcontactor(this.one)
-      console.log("update store")
       if (this.windowWidth < 600) {
         console.log(`${newValue},${oldValue}`)
         if (newValue != 10000) {
@@ -122,6 +116,14 @@ export default {
         makeTips.info("欢迎使用")
         this.showauth = false
       }
+    },exchange(uin){
+      console.log("update store")
+      if (this.windowWidth < 600) {
+          this.showOther = false
+          this.showWindow = true
+      }
+    },list(){
+      makeTips.warn("asAS ")
     }
   }
 }
@@ -130,8 +132,8 @@ export default {
 <template>
   <AuthLogin v-if="showauth" @get="tryauth"/>
   <sidebar v-if="showOther" />
-  <friendlist v-if="showOther" />
-  <RouterView v-if="showWindow" />
+  <friendlist v-if="showOther" @changed="exchange" />
+  <RouterView v-if="showWindow" @tolist="list" />
 </template>
 
 <style>

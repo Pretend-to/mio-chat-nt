@@ -63,8 +63,10 @@ export default{
 }
 .code{
     flex-basis: 28px;
+    max-width: 80%;
 }
 input{
+    width: calc( 100% - 8px);
     height: 100%;
     font-size: 20px;
 }
