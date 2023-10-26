@@ -1,57 +1,32 @@
 <script>
-import { watch } from 'vue';
-import { makelist } from '../scripts/middleware';
-import { useContactorstore } from '../stores/contactor';
 import makeTips from '@/scripts/tipsappend.js'
-
+import { useGlobalstore } from '@/stores/global'
+import { storeToRefs } from 'pinia'
 
 export default {
     data() {
-        const contactor = useContactorstore()
-        const list = makelist();
-        //console.log(list);
+        const global = useGlobalstore()
+        global.init()
+        const { friend } = storeToRefs(global)
         return {
-            list,
-            activeone: 0,
-            contactor
+            global,
+            friend
         }
     },
     methods: {
-        thatone(id, item) {
-            if (this.activeone + 1) {
-                //console.log("已经清除上一处引索" + this.activeone + "的属性")
-                if (this.list[this.activeone].important) {
-                    this.list[this.activeone].active = "important"
-                } else {
-                    this.list[this.activeone].active = "inactive"
-                }
-            }
-            this.activeone = id
-            //console.log("当前选中的引索值：" + id)
-            this.list[id].active = "active"
-            this.contactor.uin = item.uin;
-            this.$emit('changed',item.uin)
-            console.log("BBABABBABABABAB" + this.contactor.uin)
-        },
-        getindex(uin) {
-            const index = this.list.findIndex(item => item.uin === uin);
-            return index;
-        }, addone() {
+        thatone(item) {
+            this.global.pickfriend(item);
+        }
+        , addone() {
             makeTips.warn("此功能尚未开放")
+        }, status(one) {
+            console.log("recompute")
+            if (one.active) return 'active'
+            if (one.important) return 'important'
+            return null
         }
     },
-    mounted() {
-        if(this.contactor.uin != 10000) this.list[this.getindex(this.contactor.uin)].active = "active"
-        watch(() => this.contactor.newmsg, (newValue, oldValue) => {
-            this.list = makelist()
-            this.list.forEach(function (element) {
-                element.active = "inactive";
-            });
-            this.list[this.getindex(this.contactor.uin)].active = "active"
-            this.contactor.newmsg = false;
-        })
-    },
-    emits:["changed"]
+    emits: ["changed"]
 }
 </script>
 
@@ -72,8 +47,7 @@ export default {
             </div>
         </div>
         <div class="people">
-            <div @click="thatone(index, item)" v-for="(item, index) of list" :key="index" class="lists"
-                :id="(item.important && !item.active) ? 'important' : item.active">
+            <div @click="thatone(item)" v-for="(item, index) of friend" :key="index" class="lists" :id="status(item)">
                 <div class="avatar">
                     <img :src="item.avatar" :alt="item.name">
                 </div>

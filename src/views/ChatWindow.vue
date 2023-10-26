@@ -2,28 +2,28 @@
 import 'emoji-picker-element';
 import html2canvas from 'html2canvas'
 import { watch } from 'vue'; // 或 import { watch } from 'pinia';
-import { useContactorstore } from '@/stores/contactor'
+import Lss233 from '../scripts/adapter/lss233';
 import { MdPreview } from 'md-editor-v3';
-import { sentmsg, getmsg, init, getinfo,getVoices,getModels } from '@/scripts/middleware';
+import { sentmsg, getmsg } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
-import { getmain } from '../scripts/stroge';
-import { initcontactor } from '../scripts/function';
+import { getmain,getcfg } from '@/scripts/stroge';
 import ChooseList from '@/components/ChooseList.vue'
-import { getResponse,getRequest } from '../scripts/chat';
+import { useGlobalstore } from '../stores/global';
+import { storeToRefs } from 'pinia'
+
 
 export default {
     data() {
-        const contactor = useContactorstore()
-        const messagechain = getmsg(contactor.uin);
+        const global = useGlobalstore()
+        const { acting } = storeToRefs(global)
+        const one = {}
         const main = getmain()
         const info = {}
         const tochoose = { list:[] , chosen: null }
         const showchose = false
-        //console.log(contactor)
-
+        const messagechain = []
         return {
-            messagechain,
-            contactor,
+            global,
             userInput: '',
             showemoji: false,
             main,
@@ -33,7 +33,11 @@ export default {
             showchose,
             isLoading : false,
             configVoice:false,
-            configMidel:false
+            configModel:false,
+            one,
+            acting,
+            showwindow :false.
+            messagechain
         }
     }, methods: {
         handleKeyDown(event) {
@@ -54,26 +58,15 @@ export default {
             }
             this.messagechain.push(newtext)
             if (isme) { this.userInput = "" }
-        }, async send(e, prompt) {
-            if (window.innerWidth < 600) {
-                this.textareaRef.style.height = '28px';
-
+        }, async send(prompt) {
+            try {
+                const msg = prompt || await this.$refs.textarea.value
+                this.one.getRequest(msg)
+            } catch (error) {
+                makeTips.warn("请求发送失败")
+                console.log(error)
             }
-            //console.log(prompt)
-            const message = prompt || this.userInput
-            const currernt = this.contactor.uin
-            this.$refs.textarea.focus()
-            this.appendmessage(true, message);
-            this.toupdate = true;
-            const msg = await sentmsg(message, this.contactor.uin);
-            msg.forEach(element => {
-                const now = this.contactor.uin
-                this.contactor.newmsg = true
-                if (now == currernt) {
-                    this.appendmessage(false, element);
-                    this.toupdate = true;
-                }
-            });
+
         }, eemoji() {
             this.showemoji = !this.showemoji
         }, getemoji(e) {
@@ -144,32 +137,12 @@ export default {
             this.showchose = false
             const result = data.list[data.chosen]
         }
-    }, computed: {
-        showwindow() {
-            //console.log("recalculated")
-            return this.contactor.uin == 10000 ? false : true;
-        },
-        sbinfo() {
-            return getinfo(this.contactor.uin)
-        }
     }, mounted() {
         this.textareaRef = this.$refs.textarea;
         this.textareaRef.addEventListener('input', this.adjustTextareaHeight);
 
-        watch(() => this.contactor.uin, (newValue, oldValue) => {
-            if (getmsg(newValue).length) {
-                this.messagechain = getmsg(this.contactor.uin);
-                setTimeout(this.tobuttom, 0)
-                console.log(getmsg(newValue).length)
-            } else if (this.contactor.inited.includes(newValue)) {
-                console.log("未找到聊天记录，但已进行过初始化")
-                this.messagechain = [];
-            } else {
-                console.log("未找到聊天记录，且未进行过初始化操作，进行初始化人格操作")
-                this.contactor.inited.push(newValue)
-                this.reset()
-                this.messagechain = [];
-            }
+        watch(() => this.sb, (newValue, oldValue) => {
+            this.sb = global.whoactive()
         });
         setTimeout(this.tobuttom, 0)
     }, updated() {
@@ -180,8 +153,14 @@ export default {
     }, components: {
         MdPreview,
         ChooseList
-    },
-    emits:['tolist']
+    }, watch :{
+        acting(newValue){
+            console.log(this.acting)
+            this.showwindow = true
+            this.messagechain = newValue.history
+            this.one = new Lss233(newValue)
+        }
+    }
 }
 </script>
 
@@ -197,7 +176,7 @@ export default {
                         p-id="1043"></path>
                 </svg>
             </div>
-            <div class="somebody">{{ sbinfo.name }}</div>
+            <div class="somebody" v-if="acting.name">{{ acting.name }}</div>
             <div class="options">
                 <div id="system">
                     <div class="button" @click="waiting()" id="min">

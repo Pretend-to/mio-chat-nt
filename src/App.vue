@@ -5,16 +5,12 @@ import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
 import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
-import { initcontactor } from '@/scripts/function';
-import { makelist,auth } from '@/scripts/middleware';
-import { setcontactor,getcontactor } from './scripts/stroge';
+import { auth,init } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
 
 
 export default {
   data() {
-    const list = makelist();
-
     const windowWidth = 0;
     const one = useContactorstore();
     const showWindow = false;
@@ -22,7 +18,6 @@ export default {
     const authinfo = 'fucker'
     const showauth = true
     return {
-      list,
       one,
       windowWidth,
       showWindow,
@@ -73,16 +68,7 @@ export default {
       }
     })
 
-    if (this.windowWidth < 600) {
-      this.list.forEach(element => {
-        if (!element.lasttime && !this.one.inited.includes(element.uin)) {
-          initcontactor(element)
-          this.one.inited.push(element.uin)
-        }
-      });
-    }
-  },
-  beforeUnmount() {
+  },beforeUnmount() {
     window.removeEventListener('resize', this.handleResize); // 在组件销毁前移除事件监听
   },
   components: {
@@ -122,9 +108,9 @@ export default {
           this.showOther = false
           this.showWindow = true
       }
-    },list(){
-      makeTips.warn("asAS ")
-    }
+    } 
+  }, beforeCreate(){
+    init();
   }
 }
 </script>
@@ -133,7 +119,7 @@ export default {
   <AuthLogin v-if="showauth" @get="tryauth"/>
   <sidebar v-if="showOther" />
   <friendlist v-if="showOther" @changed="exchange" />
-  <RouterView v-if="showWindow" @tolist="list" />
+  <RouterView v-if="showWindow" />
 </template>
 
 <style>

@@ -1,45 +1,49 @@
-import { init } from '../middleware';
-import { getmain, savemain, gethistory, savehistory,setconfig,getcfg } from './stroge.js'
+import { get } from 'lodash';
+import { getmain,getcfg } from '@/scripts/stroge.js'
 
 
 class Lss233 {
     constructor(concator){
-        this.baseurl = "https://pi.fcip.top:2888",
-        this.resetprompt = "重置会话",
-        this.loadprompt = "变成赛博",
+        this.baseurl = this.readconfig().baseurl,
+        this.resetprompt = this.readconfig().resetprompt,
+        this.loadprompt = this.readconfig().loadprompt,
         this.title = concator.title,
         this.session_id = `${getmain.uuid}-${concator.uin}`
+        this.requestid = []
     }
 
-    getRequest(message) {
-        return new Promise((resolve, reject) => {
-          const cfg = getmain();
-          const url = `${cfg.url}/v2/chat`;
-          const data = {
-            session_id: session_id,
-            username: cfg.name,
-            message: message,
-          };
-      
-          fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          })
-            .then((response) => {
-              if (response.ok) {
-                resolve(response.text());
-              } else {
-                reject(new Error('Failed to get requestID'));
-              }
-            })
-            .catch((error) => {
-              reject(error);
-            });
+    async  getRequest(message) {
+      try {
+        const cfg = getmain();
+        const url = `${this.baseurl}/v2/chat`;
+        const data = {
+          session_id: this.session_id,
+          username: cfg.name,
+          message: message,
+        };
+    
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
         });
+    
+        if (response.ok) {
+          const responseData = await response.text();
+          console.log(responseData);
+          // this.requestid.push(responseData);
+          // return responseData;
+        } else {
+          throw new Error('Failed to get requestID');
+        }
+      } catch (error) {
+        console.error(error);
+        // throw error;
       }
+    }
+    
 
     async getResponse(requestID) {
         const url = `${this.baseurll}/v2/chat/response?request_id=${requestID}`;
@@ -90,6 +94,11 @@ class Lss233 {
         return modelIds;
     }
 
+    readconfig(){
+        const config = getcfg()
+        console.log(config)
+        return config.lss233
+    }
 }
 
 export default Lss233;

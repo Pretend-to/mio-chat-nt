@@ -11,8 +11,8 @@ class Contactor {
         this.title = info.title || '';
         this.history = getmsg(info.uin);
         this.lastchat = this.history[this.history.length - 1] 
-        this.lasttime = this.time(lastchat?.time) || '';
-        this.content = this.content(lastchat?.text) || '';
+        this.lasttime = this.time(this.lastchat?.time) || '';
+        this.content = this.content(this.lastchat?.text) || '';
         this.active = false;
         this.toinit = true;
     }
@@ -75,6 +75,11 @@ class Contactor {
                 console.error('操作失败:', error);
                 // 在这里处理操作失败的错误
             });
+    }
+
+    activeit(){
+        this.active = true
+        // if(this.toinit) this.init()
     }
 }
 

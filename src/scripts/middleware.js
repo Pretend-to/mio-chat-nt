@@ -1,7 +1,6 @@
 import { commitmessage,getResponse,getRequest } from './chat.js'
 import { getmain, savemain, gethistory, savehistory,setconfig,getcfg,setcode,getcode } from './stroge.js'
 import { generateRandomId } from './stroge.js';
-import { initcontactor,reset } from './function.js';
 import initJson from '@/assets/json/main.json'
 import initCfg from '@/assets/json/config.json'
 import Contactor from './friends.js';
@@ -107,26 +106,6 @@ export function init(uin) {
     }
 }   
 
-export function makelist() {
-    const main = getmain()
-    const list = []
-    main.contactor.forEach(element => {
-        const messagechain = getmsg(element.uin)
-        const contactor = new Contactor({ info: element, lastchat: messagechain[messagechain.length - 1] });
-        list.push(contactor);
-    });
-    return list;
-}
-
-export function getinfo(uin){
-    const main = getmain()
-    if (uin == 10000){
-        return main;
-    }else {
-        const one = main.contactor.find(item => item.uin === uin);
-        return one;
-    }
-}
 
 export function upmain(main){
     savemain(main)
