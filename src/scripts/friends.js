@@ -61,7 +61,7 @@ class Contactor {
         }else if(msg.content.image.length){
             type = "[图片]"
         }else {
-            tupe = '[语音]'
+            type = '[语音]'
         }
         return type;
     }

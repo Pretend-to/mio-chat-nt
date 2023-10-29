@@ -81,6 +81,7 @@ class Lss233 {
         continue: data.result == 'DONE' ? false : true,
         container: container
       }
+      console.log("请求结果" + data.result)
 
     } catch (error) {
       console.error('Error:', error);
@@ -101,11 +102,13 @@ class Lss233 {
     } else return false
   }
 
-  getVoices() {
+  async getVoices() {
     const msg = "切换语音 XXX"
-    const id = this.getRequest(msg)
-    data = this.getResponse(id)
-    const voiceIds = data.message[0].match(/(?:\b)[a-z]+(?:\b)/g);
+    const id = await this.getRequest(msg)
+    const data = await this.getResponse(id)
+    console.log(data)
+    const message = data.container.content.text[0]
+    const voiceIds = message.match(/(?:\b)[a-z]+(?:\b)/g);
     return voiceIds;
   }
 

@@ -31,8 +31,9 @@ export const useGlobalstore = defineStore('global', {
             return one
         },stroge(){
             setglobal(this.friend)
-        },load(){
-            const data = getglobal()
+        },async load(){
+            const data = await getglobal()
+            console.log(data)
             if(!data) this.init()
             else { 
                 data.forEach(element => {
