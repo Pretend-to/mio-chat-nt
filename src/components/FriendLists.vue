@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia'
 export default {
     data() {
         const global = useGlobalstore()
-        global.init()
+        global.load()
         const { friend } = storeToRefs(global)
         return {
             global,
@@ -20,13 +20,11 @@ export default {
         , addone() {
             makeTips.warn("此功能尚未开放")
         }, status(one) {
-            console.log("recompute")
             if (one.active) return 'active'
             if (one.important) return 'important'
             return null
         }
-    },
-    emits: ["changed"]
+    },emits: ["changed"]
 }
 </script>
 
@@ -53,8 +51,8 @@ export default {
                 </div>
                 <div class="info">
                     <div class="name">{{ item.name }}</div>
-                    <div class="msginfo" id="time">{{ item.lasttime }}</div>
-                    <div class="msginfo" id="msgctt">{{ item.content }}</div>
+                    <div class="msginfo" id="time">{{ item.lasttime() }}</div>
+                    <div class="msginfo" id="msgctt">{{ item.content() }}</div>
                 </div>
 
             </div>

@@ -1,15 +1,16 @@
 <script>
 import 'emoji-picker-element';
 import html2canvas from 'html2canvas'
-import { watch } from 'vue'; // 或 import { watch } from 'pinia';
 import Lss233 from '../scripts/adapter/lss233';
 import { MdPreview } from 'md-editor-v3';
-import { sentmsg, getmsg } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
 import { getmain,getcfg } from '@/scripts/stroge';
 import ChooseList from '@/components/ChooseList.vue'
 import { useGlobalstore } from '../stores/global';
+import { useMsgsstore } from '../stores/revmsgs';
 import { storeToRefs } from 'pinia'
+
+
 
 
 export default {
@@ -21,7 +22,8 @@ export default {
         const info = {}
         const tochoose = { list:[] , chosen: null }
         const showchose = false
-        const messagechain = []
+        const tasks = useMsgsstore()
+        const { leng } = storeToRefs(tasks)
         return {
             global,
             userInput: '',
@@ -37,13 +39,16 @@ export default {
             one,
             acting,
             showwindow :false.
-            messagechain
+            messagechain,
+            tasks,
+            leng
         }
     }, methods: {
         handleKeyDown(event) {
-            if (event.ctrlKey && event.key === "Enter") {
+            if (event.ctrlKey && event.key === "Enter" ) {
+                if( this.userInput && this.isValidInput(this.userInput)) this.send();
+                else makeTips.warn("不能发送空消息")
                 // 处理按下 Ctrl+Enter 键的逻辑
-                this.send();
             }
         }, appendmessage(isme, msg) {
             // const message =  msg.replace(/\n/g, "<br>");
@@ -58,14 +63,32 @@ export default {
             }
             this.messagechain.push(newtext)
             if (isme) { this.userInput = "" }
-        }, async send(prompt) {
+        }, async send() {
+            this.$refs.textarea.focus()
             try {
-                const msg = prompt || await this.$refs.textarea.value
-                this.one.getRequest(msg)
+                const msg = this.userInput
+                this.userInput = ''
+                const container = {
+                    role : 'user',
+                    time: new Date().getTime(),
+                    content : {
+                        voice:[],
+                        image:[],
+                        text:[msg]
+                    }
+                }
+                this.acting.addmsg(container); //存储于store
+                this.toupdate = true
+                this.global.stroge(); //持久化存储
+                const reqid = await this.one.getRequest(msg);
+                console.log("创建请求：" + reqid)
+                this.tasks.resign(this.acting,reqid)
+
             } catch (error) {
                 makeTips.warn("请求发送失败")
                 console.log(error)
             }
+
 
         }, eemoji() {
             this.showemoji = !this.showemoji
@@ -92,17 +115,10 @@ export default {
             chatWindow.scrollTop = chatWindow.scrollHeight
             //console.log(chatWindow.scrollHeight)
         }, cleanScreen() {
-            const name = `ch-${this.contactor.uin}`
-            localStorage.removeItem(name);
-            this.messagechain = [];
-            this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
-            makeTips.info("已删除聊天记录")
-            this.toupdate = true;
-            init();
-        }, reset() {
-            const sb = getinfo(this.contactor.uin)
-            initcontactor(sb)
-            makeTips.info("已重置好友人格")
+            this.acting.clean()
+            this.global.stroge(); //持久化存储
+        }, async reset() {
+            this.one.init()
         }, tolist() {
             this.contactor.uin = 10000
         }, adjustTextareaHeight() {
@@ -136,15 +152,25 @@ export default {
         },getList(data) {
             this.showchose = false
             const result = data.list[data.chosen]
+        },async revmsg(task) {
+            const response = await this.one.getResponse(task.reqid)
+            const content = response.container.content
+            if(content.text.length || content.image.length || content.voice.length){
+                const theone = this.global.friend.find(item => item.uin === task.uin)
+                theone.addmsg(response.container); //存储于store
+                this.global.stroge(); //持久化存储
+            }
+            if (response.continue) this.revmsg(task)
+            else console.log("任务处理完毕")
+            this.toupdate = true
         }
     }, mounted() {
         this.textareaRef = this.$refs.textarea;
         this.textareaRef.addEventListener('input', this.adjustTextareaHeight);
 
-        watch(() => this.sb, (newValue, oldValue) => {
-            this.sb = global.whoactive()
-        });
         setTimeout(this.tobuttom, 0)
+        console.log(this.acting)
+        if(this.acting.uin && this.acting.uin!=10000) this.showwindow = true
     }, updated() {
         if (this.toupdate) {
             setTimeout(this.tobuttom, 0)
@@ -155,10 +181,17 @@ export default {
         ChooseList
     }, watch :{
         acting(newValue){
-            console.log(this.acting)
+            console.log("选中" + this.acting.name)
             this.showwindow = true
-            this.messagechain = newValue.history
             this.one = new Lss233(newValue)
+            this.toupdate = true
+        },
+        async leng(newValue,oldValue){
+            if(newValue > oldValue){
+                console.log("获取任务")
+                const task = this.tasks.msgs.pop()
+                await this.revmsg(task)
+            }
         }
     }
 }
@@ -215,19 +248,26 @@ export default {
             </div>
         </div>
         <div class="message-window" ref="chatWindow" v-show="showwindow">
-            <div v-for="(item, index) of messagechain" :key="index" class="message-container" :id="item.role" ref="message">
+            <div v-for="(item, index) of acting.history" :key="index" class="message-container" :id="item.role" ref="message">
                 <div class="avatar">
-                    <img :src="item.avatar" :alt="item.name">
+                    <img v-if="item.role=='other'" :src="acting.avatar" :alt="acting.name">
+                    <img v-else :src="main.avatar" :alt="main.name">
                 </div>
                 <div class="msg">
                     <div class="wholename">
-                        <div class="title">{{ item.title }}</div>
-                        <div class="name">{{ item.name }}</div>
+                        <div class="title">{{ item.role=="other" ? acting.title : main.title }}</div>
+                        <div class="name">{{ item.role=="other" ? acting.name : main.name }}</div>
                     </div>
-                    <div class="content">
-                        <MdPreview editorId="preview-only" :modelValue="item.text" />
-                        <img v-for="picture of item.pic" :src="picture">
-                        <div class="loader" v-if="isLoading"></div>
+                    <div v-if="item.content.text.length != 0 && item.content.image.length == 0 && item.content.voice.length == 0" class="content" >
+                        <MdPreview v-for="(msg,index) of item.content.text" :key="index" editorId="preview-only" 
+                        :modelValue="msg" />
+                    </div>
+                    <div v-else-if="item.content.text.length == 0 && item.content.image.length != 0 && item.content.voice.length == 0" class="content" >
+                        <MdPreview v-for="(img,index) of item.content.image" :key="index" editorId="preview-only"
+                         :modelValue="'![pics](' + img + ')'"/>
+                    </div>
+                    <div v-else class="content" style="color: white;">
+                        someVoice
                     </div>
                 </div>
             </div>
@@ -299,10 +339,9 @@ export default {
             <div class="input-box">
                 <div class="input-content">
                     <textarea @keydown="handleKeyDown" ref="textarea" v-model="userInput"
-                        @click="updateCursorPosition"></textarea>
+                        @click="updateCursorPosition" placeholder="按 Ctrl + Enter 以发送"></textarea>
                 </div>
-                <button @click.prevent="send" :disabled="!userInput || !isValidInput(userInput)" id="sendButton"
-                    placeholder="按 Ctrl + Enter 以发送">发送</button>
+                <button @click.prevent="send" :disabled="!userInput || !isValidInput(userInput)" id="sendButton">发送</button>
             </div>
         </div>
         <div class="background" v-show="!showwindow">

@@ -183,11 +183,11 @@ button#addcont {
     max-width: 40px;
     max-height: 40px;
     border-radius: 50%;
-    overflow: hidden;
 }
 
 .avatar img {
     width: 100%;
+    border-radius: 50%;
 }
 
 .msg {

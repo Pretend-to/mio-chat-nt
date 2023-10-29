@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
-import { getmain } from "../scripts/stroge";
+import { getmain,setglobal,getglobal } from "../scripts/stroge";
 import Contactor from "../scripts/friends";
 
 export const useGlobalstore = defineStore('global', {
     state: () => ({
         friend: [],
-    }),
-    actions: {
+    }),actions: {
         init() {
             const main = getmain()
             main.contactor.forEach(element => {
@@ -19,7 +18,6 @@ export const useGlobalstore = defineStore('global', {
                 element.active=false
             });
             const activeone = this.friend.find(item => item.uin === sb.uin)
-            console.log(activeone)
             activeone.activeit()
             return activeone
         },whoactive(){
@@ -31,6 +29,20 @@ export const useGlobalstore = defineStore('global', {
                 return self
             }
             return one
+        },stroge(){
+            setglobal(this.friend)
+        },load(){
+            const data = getglobal()
+            if(!data) this.init()
+            else { 
+                data.forEach(element => {
+                    const contactor = new Contactor( element );
+                    element.history.forEach(message => {
+                        contactor.history.push(message)
+                    })
+                    this.friend.push(contactor);
+                });
+            }
         }
     },getters: {
         acting: (state) => state.friend.find(item => item.active === true) ? state.friend.find(item => item.active === true) : {}

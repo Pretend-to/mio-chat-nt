@@ -28,7 +28,6 @@ export default {
   },
   mounted() {
     const currerntcode = auth()
-    console.log(currerntcode)
     if (currerntcode ==  'root'){
       makeTips.info("欢迎主人")
       this.showauth = false

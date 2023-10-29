@@ -44,12 +44,18 @@ export function getcfg(){
     return storedData;
 }
 
-export function setcontactor(cfg){
-    localStorage.setItem("contactor", JSON.stringify(cfg));
+export function setglobal(cfg){
+    localStorage.setItem("global", JSON.stringify(cfg));
 }
 
-export function getcontactor(){
-    const storedData = JSON.parse(localStorage.getItem('contactor'));
+export function getglobal(){
+    let storedData
+    try {
+        storedData = JSON.parse(localStorage.getItem('global'));
+    } catch (error) {
+        return undefined
+    }
+    
     return storedData;
 }
 

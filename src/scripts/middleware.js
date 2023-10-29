@@ -3,7 +3,6 @@ import { getmain, savemain, gethistory, savehistory,setconfig,getcfg,setcode,get
 import { generateRandomId } from './stroge.js';
 import initJson from '@/assets/json/main.json'
 import initCfg from '@/assets/json/config.json'
-import Contactor from './friends.js';
 import { Buffer } from "buffer";
 
 export function getmsg(uin) {

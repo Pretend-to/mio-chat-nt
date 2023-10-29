@@ -1,7 +1,3 @@
-import { getmsg } from "./middleware";
-import { systemchat, getconfig } from "./middleware";
-
-
 class Contactor {
     constructor(info ) {
         this.uin = info.uin || '';
@@ -9,22 +5,20 @@ class Contactor {
         this.avatar = info.avatar || '';
         this.important = info.important || false;
         this.title = info.title || '';
-        this.history = getmsg(info.uin);
-        this.lastchat = this.history[this.history.length - 1] 
-        this.lasttime = this.time(this.lastchat?.time) || '';
-        this.content = this.content(this.lastchat?.text) || '';
+        this.history = [];
         this.active = false;
         this.toinit = true;
     }
 
-    time(last) {
+    lasttime() {
+        const last = this.history[this.history.length - 1]
         if (!last) {
             return '';
         }
-        
-        const currentTime = new Date();
-        const lastTime = new Date(last);
-        const timeDiff = currentTime - lastTime;
+
+        const currentTime = new Date().getTime();
+        const lastTime = new Date(last.time);
+        const timeDiff = currentTime - lastTime.getTime();
         
         if (timeDiff < 24 * 60 * 60 * 1000) {
             this.toinit = false
@@ -49,37 +43,31 @@ class Contactor {
         }
     }
 
-    content(last) {
-        if (!last) {
-            return '';
-        }else {
-            // 长度大于10，返回前8位并补充2位省略号
-            return last;
-        }
-    }
-
-    init() {
-
-        const config = getconfig()
-    
-        const msg = `${config.loadprompt}${this.title}`
-    
-        console.log(msg)
-    
-        systemchat(msg, this.uin)
-            .then(result => {
-                console.log('操作成功:', result);
-                // 在这里处理操作成功的结果
-            })
-            .catch(error => {
-                console.error('操作失败:', error);
-                // 在这里处理操作失败的错误
-            });
-    }
-
     activeit(){
         this.active = true
         // if(this.toinit) this.init()
+    }
+    
+    addmsg(msg){
+        this.history.push(msg)
+    }
+
+    content(){
+        const msg = this.history[this.history.length - 1]
+        if(!msg) return ''
+        let type = '';
+        if(msg.content.text.length){
+            type = msg.content.text[0]
+        }else if(msg.content.image.length){
+            type = "[图片]"
+        }else {
+            tupe = '[语音]'
+        }
+        return type;
+    }
+
+    clean(){
+        this.history = []
     }
 }
 
