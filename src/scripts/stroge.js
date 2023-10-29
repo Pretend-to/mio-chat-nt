@@ -1,4 +1,4 @@
-import localforage from 'localforage';
+import localForage from 'localforage';
 
 export function getmain(){
     const storedData = JSON.parse(localStorage.getItem('main'));
@@ -7,22 +7,6 @@ export function getmain(){
 
 export function savemain(main){
     localStorage.setItem("main", JSON.stringify(main));
-}
-
-export function savehistory(uin,chain){
-    const chainame = `ch-${uin}`;
-    //console.log("存储了名为" + chainame + "的" + history)
-    localStorage.setItem(chainame, JSON.stringify(chain));
-}
-
-export function gethistory(uin){
-    let history=[];
-    const name = `ch-${uin}`
-    if(localStorage.getItem(name)){
-        history = JSON.parse(localStorage.getItem(name));
-    }
-    //console.log("给" + name + "执行gethistory：\n" + history)
-    return history;
 }
 
 export function generateRandomId() {
@@ -44,14 +28,27 @@ export function getcfg(){
     return storedData;
 }
 
-export function setcontactor(cfg){
-    localStorage.setItem("contactor", JSON.stringify(cfg));
+export function setglobal(cfg){
+    localForage.setItem('global', JSON.stringify(cfg)).then(function (value) {
+        // 当值被存储后，可执行其他操作
+        console.log("存储成功");
+    }).catch(function(err) {
+        // 当出错时，此处代码运行
+        console.log(err);
+    });
 }
 
-export function getcontactor(){
-    const storedData = JSON.parse(localStorage.getItem('contactor'));
-    return storedData;
-}
+export async function getglobal() {
+    try {
+      const storedData = await localForage.getItem('global');
+      console.log("读取成功");
+      return JSON.parse(storedData);
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
+  }
+  
 
 export function setcode(cfg){
     localStorage.setItem("code", cfg);

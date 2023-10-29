@@ -1,7 +1,5 @@
 <script>
-import { getinfo,updatesb } from '../scripts/middleware';
-import { useContactorstore } from '../stores/contactor';
-import { watch } from 'vue';
+import { useGlobalstore } from '../stores/global';
 
 
 export default {

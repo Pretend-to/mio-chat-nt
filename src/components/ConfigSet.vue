@@ -17,14 +17,14 @@
                 </div>
 
                 <div id="c-baseurl" class="form">
-                    baseurl：<input type="text" v-model="cfg.baseurl" />
+                    baseurl：<input type="text" v-model="cfg.lss233.baseurl" />
                 </div>
                 <div id="c-respmt" class="form">
-                    重置：<input type="text" v-model="cfg.resetprompt" />
+                    重置：<input type="text" v-model="cfg.lss233.resetprompt" />
                 </div>
 
                 <div id="c-loadpmt" class="form">
-                    加载：<input type="text" v-model="cfg.loadprompt" />
+                    加载：<input type="text" v-model="cfg.lss233.loadprompt" />
                 </div>
 
                 <div id="c-uuid" class="form">

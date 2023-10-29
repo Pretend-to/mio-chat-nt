@@ -18,5 +18,23 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    port: '5173',
+    proxy: {
+      '/qava': {
+        // 后台地址
+        target: 'http://mio.fcip.top:6050/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api1/, '')
+      },
+      '/mava': {
+        // 后台地址
+        target: 'http://mio.fcip.top:6050/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api2/, '')
+      }
+    }
   }
+
 })

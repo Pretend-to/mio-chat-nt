@@ -1,29 +1,31 @@
 <script>
 import 'emoji-picker-element';
 import html2canvas from 'html2canvas'
-import { watch } from 'vue'; // 或 import { watch } from 'pinia';
-import { useContactorstore } from '@/stores/contactor'
+import Lss233 from '../scripts/adapter/lss233';
 import { MdPreview } from 'md-editor-v3';
-import { sentmsg, getmsg, init, getinfo,getVoices,getModels } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
-import { getmain } from '../scripts/stroge';
-import { initcontactor } from '../scripts/function';
+import { getmain } from '@/scripts/stroge';
 import ChooseList from '@/components/ChooseList.vue'
-import { getResponse,getRequest } from '../scripts/chat';
+import { useGlobalstore } from '../stores/global';
+import { useMsgsstore } from '../stores/revmsgs';
+import { storeToRefs } from 'pinia'
+
+
+
 
 export default {
     data() {
-        const contactor = useContactorstore()
-        const messagechain = getmsg(contactor.uin);
+        const global = useGlobalstore()
+        const { acting } = storeToRefs(global)
+        const one = {}
         const main = getmain()
         const info = {}
-        const tochoose = { list:[] , chosen: null }
+        const tochoose = { list: [], chosen: null }
         const showchose = false
-        //console.log(contactor)
-
+        const tasks = useMsgsstore()
+        const { leng } = storeToRefs(tasks)
         return {
-            messagechain,
-            contactor,
+            global,
             userInput: '',
             showemoji: false,
             main,
@@ -31,49 +33,53 @@ export default {
             textareaRef: null,
             tochoose,
             showchose,
-            isLoading : false,
-            configVoice:false,
-            configMidel:false
+            isLoading: false,
+            configVoice: false,
+            configModel: false,
+            one,
+            acting,
+            showwindow: false,
+            playing: false,
+            tasks,
+            leng,
+            crtvoice: '关闭',
+            dldimg:'',
+            todld:false,
+            listype: 0, //语音，模型，消息
+            pickedmsg:0
         }
     }, methods: {
         handleKeyDown(event) {
             if (event.ctrlKey && event.key === "Enter") {
+                if (this.userInput && this.isValidInput(this.userInput)) this.send();
+                else makeTips.warn("不能发送空消息")
                 // 处理按下 Ctrl+Enter 键的逻辑
-                this.send();
             }
-        }, appendmessage(isme, msg) {
-            // const message =  msg.replace(/\n/g, "<br>");
-            const sb = getinfo(this.contactor.uin)
-            const newtext =
-            {
-                role: isme ? "user" : "other",
-                name: isme ? this.main.name : sb.name,
-                title: isme ? this.main.title : sb.title,
-                avatar: isme ? this.main.avatar : sb.avatar,
-                text: msg
-            }
-            this.messagechain.push(newtext)
-            if (isme) { this.userInput = "" }
-        }, async send(e, prompt) {
-            if (window.innerWidth < 600) {
-                this.textareaRef.style.height = '28px';
-
-            }
-            //console.log(prompt)
-            const message = prompt || this.userInput
-            const currernt = this.contactor.uin
+        }, async send() {
             this.$refs.textarea.focus()
-            this.appendmessage(true, message);
-            this.toupdate = true;
-            const msg = await sentmsg(message, this.contactor.uin);
-            msg.forEach(element => {
-                const now = this.contactor.uin
-                this.contactor.newmsg = true
-                if (now == currernt) {
-                    this.appendmessage(false, element);
-                    this.toupdate = true;
+            try {
+                const msg = this.userInput
+                this.userInput = ''
+                const container = {
+                    role: 'user',
+                    time: new Date().getTime(),
+                    content: {
+                        voice: [],
+                        image: [],
+                        text: [msg]
+                    }
                 }
-            });
+                this.acting.addmsg(container); //存储于store
+                this.toupdate = true
+                this.global.stroge(); //持久化存储
+                const reqid = await this.one.getRequest(msg);
+                console.log("创建请求：" + reqid)
+                this.tasks.resign(this.acting, reqid)
+
+            } catch (error) {
+                makeTips.warn("请求发送失败")
+                console.log(error)
+            }
         }, eemoji() {
             this.showemoji = !this.showemoji
         }, getemoji(e) {
@@ -99,19 +105,13 @@ export default {
             chatWindow.scrollTop = chatWindow.scrollHeight
             //console.log(chatWindow.scrollHeight)
         }, cleanScreen() {
-            const name = `ch-${this.contactor.uin}`
-            localStorage.removeItem(name);
-            this.messagechain = [];
-            this.contactor.inited.splice(this.contactor.inited.indexOf(this.contactor.uin))
-            makeTips.info("已删除聊天记录")
-            this.toupdate = true;
-            init();
-        }, reset() {
-            const sb = getinfo(this.contactor.uin)
-            initcontactor(sb)
-            makeTips.info("已重置好友人格")
+            this.acting.clean()
+            this.global.stroge(); //持久化存储
+        }, async reset() {
+            this.one.init()
         }, tolist() {
-            this.contactor.uin = 10000
+            this.global.alldown()
+            this.global.tochat(false);
         }, adjustTextareaHeight() {
             if (window.innerWidth < 600) {
                 this.textareaRef.style.height = '28px';
@@ -126,57 +126,157 @@ export default {
             const regex = /^[ \n]+$/;
             const result = !regex.test(input);
             return result
-        }, pushtip(type, info) {
-            this.tips.push({
-                info: info,
-                type: type
-            })
         }, waiting() {
             makeTips.warn("此功能尚未开放");
-        },async voiceList(){
+        }, async voiceList() {
             let data = ["关闭"]
-            const list = await getVoices()
+            const list = await this.one.getVoices()
             this.tochoose.list = data.concat(list)
-            this.tochoose.chosen = 0
+            this.listype = 1
+            this.tochoose.chosen = this.crtvoice == '关闭' ? 0 : (1 + list.findIndex(item => item === this.crtvoice));
             this.showchose = true
-        },async modelList(){
+        }, async modelList() {
             let data = ["关闭"]
             const list = await getModels()
             this.tochoose.list = data.concat(list)
             this.tochoose.chosen = 0
             this.showchose = true
-        },getList(data) {
+        }, getList(data) {
             this.showchose = false
+            console.log(data)
+            console.log(this.listype)
+            if(this.listype == 1){
+                console.log("dsdasdasdas")
+                this.changevoice(data)
+            }else if(this.listype == 2){
+                this.changemodel(result)
+            }else if(this.listype == 3){
+                this.readmsg(data)
+            }
+        }, changevoice(data){
+            console.log(data)
             const result = data.list[data.chosen]
-        }
-    }, computed: {
-        showwindow() {
-            //console.log("recalculated")
-            return this.contactor.uin == 10000 ? false : true;
-        },
-        sbinfo() {
-            return getinfo(this.contactor.uin)
+            this.crtvoice = result
+            this.userInput = '切换语音 ' + result
+            this.send()
+        }, async revmsg(task) {
+            const response = await this.one.getResponse(task.reqid)
+            const content = response.container.content
+            if (content.text.length || content.image.length || content.voice.length) {
+                const theone = this.global.friend.find(item => item.uin === task.uin)
+                theone.addmsg(response.container); //存储于store
+                this.global.stroge(); //持久化存储
+            }
+            if (response.continue) this.revmsg(task)
+            else console.log("任务处理完毕")
+            this.toupdate = true
+        }, toplay(time) {
+            const audioId = `voice-${time}`;
+            const audio = document.getElementById(audioId);
+            if (audio.paused) {
+                audio.play();
+                this.playing = true;
+            } else {
+                audio.pause();
+                this.playing = false;
+            }
+
+            const endedHandler = () => {
+                this.playing = false;
+                audio.removeEventListener('ended', endedHandler);
+            };
+
+            audio.addEventListener('ended', endedHandler);
+        }, toimg() {
+            makeTips.info("请稍候，加紧制作中")
+            let ra = this.readra()
+            console.log(ra)
+            // 获取要截图的元素
+            const targetElement = this.$refs.chatWindow;
+
+            // 获取元素的实际宽度和高度
+
+            const rect = targetElement.getBoundingClientRect();
+            const elementWidth = rect.width;
+
+            console.log(rect.width);
+
+            // 计算子元素的高度之和
+            let totalHeight = 0;
+            for (let child of targetElement.children) {
+                totalHeight += child.offsetHeight;
+                console.log(child.offsetHeight)
+            }
+
+            // 使用 html2canvas 将元素转换为 canvas，并设置 windowWidth 和 windowHeight 选项
+            html2canvas(targetElement, {
+                windowWidth: elementWidth,
+                windowHeight: totalHeight * ra
+            }).then(canvas => {
+                // 将 canvas 转换为 base64 编码的 PNG 图片
+                makeTips.info("制作完成！请右键(长按)保存！")
+
+                const imgData = canvas.toDataURL('image/png');
+                this.dldimg = imgData;
+                this.todld = true
+
+            });
+        }, readra() {
+
+            var ratio = 0;
+            var screen = window.screen;
+            var ua = navigator.userAgent.toLowerCase();
+
+            if (window.devicePixelRatio !== undefined) {
+                ratio = window.devicePixelRatio;
+            }
+            else if (~ua.indexOf('msie')) {
+                if (screen.deviceXDPI && screen.logicalXDPI) {
+                    ratio = screen.deviceXDPI / screen.logicalXDPI;
+                }
+
+            }
+            else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+                ratio = window.outerWidth / window.innerWidth;
+            }
+
+            if (ratio) {
+                ratio = Math.round(ratio);
+            }
+            return ratio;
+
+        }, pickmsg(index){
+            const list = ["复制文本","删除消息"]
+            this.listype = 3
+            this.tochoose.list = list
+            this.tochoose.chosen = null
+            this.showchose = true
+            this.pickedmsg = index
+            console.log(this.acting.history[index])
+        }, readmsg(data){
+            console.log(data)
+            if (data.chosen == 0) {
+                var textarea = document.createElement("textarea");
+                textarea.value = this.acting.history[this.pickedmsg].content.text[0];
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+                makeTips.info("已复制")
+            }else{
+                this.acting.history.splice(this.pickedmsg,1)
+                makeTips.info("已删除")
+                this.global.stroge(); //持久化存储
+            }
         }
     }, mounted() {
         this.textareaRef = this.$refs.textarea;
         this.textareaRef.addEventListener('input', this.adjustTextareaHeight);
 
-        watch(() => this.contactor.uin, (newValue, oldValue) => {
-            if (getmsg(newValue).length) {
-                this.messagechain = getmsg(this.contactor.uin);
-                setTimeout(this.tobuttom, 0)
-                console.log(getmsg(newValue).length)
-            } else if (this.contactor.inited.includes(newValue)) {
-                console.log("未找到聊天记录，但已进行过初始化")
-                this.messagechain = [];
-            } else {
-                console.log("未找到聊天记录，且未进行过初始化操作，进行初始化人格操作")
-                this.contactor.inited.push(newValue)
-                this.reset()
-                this.messagechain = [];
-            }
-        });
-        setTimeout(this.tobuttom, 0)
+        console.log(this.acting)
+        this.one = new Lss233(this.acting)
+        setTimeout(this.tobuttom, 50)
+        if (this.acting.uin && this.acting.uin != 10000) { this.showwindow = true }
     }, updated() {
         if (this.toupdate) {
             setTimeout(this.tobuttom, 0)
@@ -185,12 +285,30 @@ export default {
     }, components: {
         MdPreview,
         ChooseList
+    }, watch: {
+        acting(newValue) {
+            if (newValue.uin) {
+                this.showwindow = true
+                this.one = new Lss233(newValue)
+                this.toupdate = true
+                console.log(newValue)
+                console.log("选中" + this.acting.name)
+                console.log(this.showwindow)
+            }
+        },
+        async leng(newValue, oldValue) {
+            if (newValue > oldValue) {
+                console.log("获取任务")
+                const task = this.tasks.msgs.pop()
+                await this.revmsg(task)
+            }
+        }
     }
 }
 </script>
 
 <template>
-    <ChooseList v-if="showchose" :tochoose="tochoose" @leave ="showchose = false" @save= "getList" />
+    <ChooseList v-if="showchose" :tochoose="tochoose" @leave="showchose = false" @save="getList" />
     <div id="chatwindow">
         <div class="upsidebar" id="chat" v-show="showwindow">
             <div class="return" @click="tolist">
@@ -201,7 +319,7 @@ export default {
                         p-id="1043"></path>
                 </svg>
             </div>
-            <div class="somebody">{{ sbinfo.name }}</div>
+            <div class="somebody" v-if="acting.name">{{ acting.name }}</div>
             <div class="options">
                 <div id="system">
                     <div class="button" @click="waiting()" id="min">
@@ -229,7 +347,7 @@ export default {
                         </svg>
                     </div>
                 </div>
-                <div id="share" @click="waiting()">
+                <div id="share" @click="toimg()">
                     <svg t="1696841917190" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="4742">
                         <path
@@ -240,19 +358,57 @@ export default {
             </div>
         </div>
         <div class="message-window" ref="chatWindow" v-show="showwindow">
-            <div v-for="(item, index) of messagechain" :key="index" class="message-container" :id="item.role" ref="message">
+            <div v-for="(item, index) of acting.history" :key="index" class="message-container" :id="item.role"
+                ref="message">
                 <div class="avatar">
-                    <img :src="item.avatar" :alt="item.name">
+                    <img v-if="item.role == 'other'" :src="acting.avatar" :alt="acting.name">
+                    <img v-else :src="main.avatar" :alt="main.name">
                 </div>
-                <div class="msg">
+                <div class="msg" @dblclick="pickmsg(index)">
                     <div class="wholename">
-                        <div class="title">{{ item.title }}</div>
-                        <div class="name">{{ item.name }}</div>
+                        <div class="title">{{ item.role == "other" ? acting.title : main.title }}</div>
+                        <div class="name">{{ item.role == "other" ? acting.name : main.name }}</div>
                     </div>
-                    <div class="content">
-                        <MdPreview editorId="preview-only" :modelValue="item.text" />
-                        <img v-for="picture of item.pic" :src="picture">
-                        <div class="loader" v-if="isLoading"></div>
+                    <div v-if="item.content.text.length != 0 && item.content.image.length == 0 && item.content.voice.length == 0"
+                        class="content" >
+                        <MdPreview v-for="(msg, index) of item.content.text" :key="index" editorId="preview-only"
+                            :modelValue="msg" />
+                    </div>
+                    <div v-else-if="item.content.text.length == 0 && item.content.image.length != 0 && item.content.voice.length == 0"
+                        class="content">
+                        <MdPreview v-for="(img, index) of item.content.image" :key="index" editorId="preview-only"
+                            :modelValue="'![pics](' + img + ')'" />
+                    </div>
+                    <div v-else class="content">
+                        <div class="voice-box">
+                            <div class="icon" @click="toplay(item.time)">
+                                <svg v-if="!playing" t="1698576153001" viewBox="0 0 1024 1024" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" p-id="7815" width="13" height="13">
+                                    <path
+                                        d="M889.18 512.01c-128.19 94.47-241.09 167.88-338.7 220.25S326.29 839.69 170.75 897.44c-23.95-128.25-35.92-256.65-35.92-385.2s11.97-257.11 35.92-385.67c111.17 33.95 228.05 83.81 350.65 149.58 122.59 65.78 245.18 144.4 367.78 235.86z"
+                                        fill="#ffffff" p-id="7816"></path>
+                                    <path
+                                        d="M170.75 940.27c-7.32 0-14.6-1.88-21.1-5.56a42.8 42.8 0 0 1-20.99-29.4C104.34 775.07 92 642.79 92 512.24c0-130.53 12.34-262.94 36.66-393.51a42.708 42.708 0 0 1 19.89-28.77c10.43-6.32 23-7.95 34.71-4.35 113.38 34.65 233.95 86.05 358.37 152.8 123.96 66.5 249.47 147.01 373.14 239.29A42.806 42.806 0 0 1 932 512.14a42.816 42.816 0 0 1-17.4 34.36c-129.02 95.08-244.74 170.28-343.86 223.52-98.81 52.99-228.37 109.37-385.08 167.58a42.848 42.848 0 0 1-14.91 2.67z m33.73-757.78c-17.82 109.74-26.83 220.45-26.83 329.75 0 108.47 8.89 218.21 26.41 326.86 131.47-50.31 241.02-98.87 326.17-144.54 83.41-44.79 179.52-106.14 286.29-182.68C711.55 436.46 605.7 370 501.15 313.9c-102.61-55.06-202.19-99.14-296.67-131.41z"
+                                        fill="#ffffff" p-id="7817"></path>
+                                </svg>
+                                <svg v-else t="1698574343186" viewBox="0 0 1024 1024" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" p-id="5329" id="mx_n_1698574343188" width="16"
+                                    height="16">
+                                    <path
+                                        d="M312.89 960a99.55 99.55 0 0 0 99.55-99.56V163.56A99.55 99.55 0 0 0 312.89 64a99.56 99.56 0 0 0-99.56 99.56v696.88A99.56 99.56 0 0 0 312.89 960z m298.67-796.44v696.88A99.55 99.55 0 0 0 711.11 960a99.56 99.56 0 0 0 99.56-99.56V163.56A99.56 99.56 0 0 0 711.11 64a99.55 99.55 0 0 0-99.55 99.56z"
+                                        p-id="5330" fill="#ffffff"></path>
+                                </svg>
+                            </div>
+                            <div class="wave">
+                                <svg t="1698574454596" viewBox="0 0 5939 1024" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" p-id="6750">
+                                    <path
+                                        d="M665.6 358.4c28.16 0 51.2 21.504 51.2 47.7696v262.8608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V406.1696C614.4 379.904 636.9792 358.4 665.6 358.4z m1843.2 0c28.16 0 51.2 21.504 51.2 47.7696v262.8608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V406.1696C2457.6 379.904 2480.64 358.4 2508.8 358.4z m1536 0c28.16 0 51.2 21.504 51.2 47.7696v262.8608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V406.1696C3993.1392 379.904 4016.2304 358.4 4044.8 358.4z m1843.2 0c28.16 0 51.2 21.504 51.2 47.7696v262.8608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V406.1696c0-26.2656 22.5792-47.7696 51.2-47.7696zM2816 307.2c28.16 0 51.2 19.7632 51.2 43.8784v373.0432c0 24.1152-23.04 43.8784-51.2 43.8784s-51.2-19.7632-51.2-43.8784V351.0784c0-24.1152 23.04-43.8784 51.2-43.8784z m921.6-51.2c28.16 0 51.2 20.2752 51.2 45.056v473.088c0 24.7808-23.04 45.056-51.2 45.056s-51.2-20.2752-51.2-45.056V301.056c0-24.7808 23.04-45.056 51.2-45.056zM3123.2 358.4c28.16 0 51.2 23.04 51.2 51.2v204.8c0 28.16-23.04 51.2-51.2 51.2s-51.2-23.04-51.2-51.2V409.6c0-28.6208 23.04-51.2 51.2-51.2z m307.2-51.2c28.16 0 51.2 21.7088 51.2 48.128v313.344c0 26.4192-23.04 48.128-51.2 48.128s-51.2-21.7088-51.2-48.128V355.328c-0.4608-26.88 22.6304-48.128 51.2-48.128zM358.4 256c28.16 0 51.2 20.2752 51.2 45.056v473.088c0 24.7808-23.04 45.056-51.2 45.056s-51.2-20.2752-51.2-45.056V301.056C307.2 276.2752 330.24 256 358.4 256zM51.2 358.4c28.16 0 51.2 23.04 51.2 51.2v204.8c0 28.16-23.04 51.2-51.2 51.2s-51.2-23.04-51.2-51.2V409.6c0-28.6208 22.5792-51.2 51.2-51.2z m921.6-102.4c28.16 0 51.2 20.992 51.2 46.4896v419.0208c0 25.5488-23.04 46.4896-51.2 46.4896s-51.2-20.992-51.2-46.4896V302.4896C921.6 276.992 944.64 256 972.8 256z m1228.8 0c28.16 0 51.2 20.992 51.2 46.4896v419.0208c0 25.5488-23.04 46.4896-51.2 46.4896s-51.2-20.992-51.2-46.4896V302.4896C2150.4 276.992 2173.44 256 2201.6 256z m2150.4 0c28.16 0 51.2 22.016 51.2 48.9472v465.3056c0 26.88-23.04 48.9472-51.2 48.9472s-51.2-22.016-51.2-48.9472V304.9472c0-26.88 23.04-48.9472 51.2-48.9472z m1228.8 0c28.16 0 51.2 20.992 51.2 46.4896v419.0208c0 25.5488-23.04 46.4896-51.2 46.4896s-51.2-20.992-51.2-46.4896V302.4896c0-25.5488 23.04-46.4896 51.2-46.4896zM1280 204.8c28.16 0 51.2 21.2992 51.2 47.2064v519.9872c0 25.9072-23.04 47.2064-51.2 47.2064s-51.2-21.2992-51.2-47.2064V252.0064c0-25.9072 23.04-47.2064 51.2-47.2064z m614.4 0c28.16 0 51.2 20.6336 51.2 45.8752v573.8496c0 25.2416-23.04 45.8752-51.2 45.8752s-51.2-20.6336-51.2-45.8752V250.6752c0-25.2416 23.04-45.8752 51.2-45.8752z m2764.8-51.2c28.16 0 51.2 21.504 51.2 47.7696v621.2608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V201.3696C4607.5392 175.104 4630.6304 153.6 4659.2 153.6z m614.4 0c28.16 0 51.2 21.504 51.2 47.7696v621.2608c0 26.2656-23.04 47.7696-51.2 47.7696s-51.2-21.504-51.2-47.7696V201.3696c0-26.2656 22.5792-47.7696 51.2-47.7696zM1587.2 0c28.16 0 51.2 20.992 51.2 46.4896v931.0208c0 25.5488-23.04 46.4896-51.2 46.4896s-51.2-20.992-51.2-46.4896V46.4896C1536 20.992 1559.04 0 1587.2 0z m3379.2 51.2c28.16 0 51.2 20.736 51.2 46.08v829.44c0 25.344-23.04 46.08-51.2 46.08s-51.2-20.736-51.2-46.08V97.28c0-25.344 23.04-46.08 51.2-46.08z"
+                                        fill="#333333" p-id="6751"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <audio :src="item.content.voice[0]" :id="'voice-' + item.time"></audio>
                     </div>
                 </div>
             </div>
@@ -304,7 +460,7 @@ export default {
                 </div>
                 <div class="bu-emoji">
                     <p id="ho-emoji">语音</p>
-                    <svg  @click="voiceList" t="1697536440024" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                    <svg @click="voiceList" t="1697536440024" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="7282" width="24" height="24">
                         <path
                             d="M544 851.946667V906.666667a32 32 0 0 1-64 0v-54.72C294.688 835.733333 149.333333 680.170667 149.333333 490.666667v-21.333334a32 32 0 0 1 64 0v21.333334c0 164.949333 133.717333 298.666667 298.666667 298.666666s298.666667-133.717333 298.666667-298.666666v-21.333334a32 32 0 0 1 64 0v21.333334c0 189.514667-145.354667 345.066667-330.666667 361.28zM298.666667 298.56C298.666667 180.8 394.165333 85.333333 512 85.333333c117.781333 0 213.333333 95.541333 213.333333 213.226667v192.213333C725.333333 608.533333 629.834667 704 512 704c-117.781333 0-213.333333-95.541333-213.333333-213.226667V298.56z m64 0v192.213333C362.666667 573.12 429.557333 640 512 640c82.496 0 149.333333-66.805333 149.333333-149.226667V298.56C661.333333 216.213333 594.442667 149.333333 512 149.333333c-82.496 0-149.333333 66.805333-149.333333 149.226667z"
@@ -313,7 +469,7 @@ export default {
                 </div>
                 <div class="bu-emoji">
                     <p id="ho-emoji">模型选择</p>
-                    <svg @click="waiting"  t="1697536322502" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
+                    <svg @click="waiting" t="1697536322502" class="chat-icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="6223" width="24" height="24">
                         <path
                             d="M618.666667 106.666667H405.333333v85.333333h64v42.666667H149.333333v661.333333h725.333334V234.666667H554.666667V192h64V106.666667zM234.666667 810.666667V320h554.666666v490.666667H234.666667zM21.333333 448v234.666667h85.333334V448H21.333333z m896 0v234.666667h85.333334V448h-85.333334z m-469.333333 64h-106.666667v106.666667h106.666667v-106.666667z m234.666667 0h-106.666667v106.666667h106.666667v-106.666667z"
@@ -323,20 +479,44 @@ export default {
             </div>
             <div class="input-box">
                 <div class="input-content">
-                    <textarea @keydown="handleKeyDown" ref="textarea" v-model="userInput"
-                        @click="updateCursorPosition"></textarea>
+                    <textarea @keydown="handleKeyDown" ref="textarea" v-model="userInput" @click="updateCursorPosition"
+                        placeholder="按 Ctrl + Enter 以发送"></textarea>
                 </div>
-                <button @click.prevent="send" :disabled="!userInput || !isValidInput(userInput)" id="sendButton"
-                    placeholder="按 Ctrl + Enter 以发送">发送</button>
+                <button @click.prevent="send" :disabled="!userInput || !isValidInput(userInput)" id="sendButton">发送</button>
             </div>
         </div>
         <div class="background" v-show="!showwindow">
             <img src="@/assets/default.svg" alt="SVG图标">
         </div>
     </div>
+    <div v-if="todld"  @click.self="todld = false" class="black-overlay" >
+        <img  :src="dldimg" alt="pics"  id="theimg" >
+    </div>
+    
 </template>
 
 <style scoped>
+.black-overlay{
+
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1001;
+    /* z-index 属性设置元素的堆叠顺序。*/
+}
+
+#theimg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 75%;
+  max-width: 50%;
+}
+
 .background img {
     position: absolute;
     top: 50%;
@@ -382,6 +562,35 @@ svg:hover {
     fill: rgb(0, 153, 255);
 }
 
+.voice-box {
+    display: flex;
+    width: 180px;
+    height: 24px;
+    margin: 4px 0px;
+}
+
+
+
+.voice-box .icon {
+    flex-basis: 24px;
+    background-color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.voice-box .wave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1
+}
+
+.wave svg {
+    height: 20px;
+    width: 80%;
+}
 
 .loader {
     width: 10px;
@@ -453,4 +662,5 @@ svg:hover {
         overflow-y: auto
     }
 
-}</style>
+}
+</style>

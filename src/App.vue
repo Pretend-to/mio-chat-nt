@@ -3,37 +3,35 @@ import { RouterView } from 'vue-router'
 import AuthLogin from './components/AuthLogin.vue';
 import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
-import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
-import { initcontactor } from '@/scripts/function';
-import { makelist,auth } from '@/scripts/middleware';
-import { setcontactor,getcontactor } from './scripts/stroge';
+import { auth,init } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
+import { useGlobalstore } from '@/stores/global';
+import { storeToRefs } from 'pinia'
 
 
 export default {
   data() {
-    const list = makelist();
-
     const windowWidth = 0;
-    const one = useContactorstore();
+    const global = useGlobalstore()
+    const { acting } = storeToRefs(global)
     const showWindow = false;
     const showOther = true;
     const authinfo = 'fucker'
     const showauth = true
     return {
-      list,
-      one,
       windowWidth,
       showWindow,
       showOther,
       authinfo,
-      showauth
+      showauth,
+      global,
+      acting
     }
-  },
-  mounted() {
+  }, mounted() {
+    this.global.load()
+
     const currerntcode = auth()
-    console.log(currerntcode)
     if (currerntcode ==  'root'){
       makeTips.info("欢迎主人")
       this.showauth = false
@@ -42,18 +40,13 @@ export default {
       this.showauth = false
     }
 
-    let store = getcontactor()
-    if (store){
-        this.one = store
-        console.log(store)
-      }
     this.getWindowWidth(); // 获取初始窗口宽度
     window.addEventListener('resize', this.handleResize); // 监听窗口大小变化
     watch(() => this.windowWidth, (newValue, oldValue) => {
       if (newValue > 600) {
         this.showOther = true;
         this.showWindow = true;
-      } else if (this.one.uin == 10000) {
+      } else if (acting.uin == 10000) {
         this.showOther = true
         this.showWindow = false
       } else {
@@ -61,37 +54,10 @@ export default {
         this.showWindow = true
       }
     })
-    watch(() => this.one.uin, (newValue, oldValue) => {
-      setcontactor(this.one)
-      console.log("update store")
-      if (this.windowWidth < 600) {
-        console.log(`${newValue},${oldValue}`)
-        if (newValue != 10000) {
-          this.showOther = false
-          this.showWindow = true
-        } else if (oldValue != 10000) {
-          this.showOther = true
-          this.showWindow = false
-        } else {
-          this.showOther = false
-          this.showWindow = true
-        }
-      }
-    })
 
-    if (this.windowWidth < 600) {
-      this.list.forEach(element => {
-        if (!element.lasttime && !this.one.inited.includes(element.uin)) {
-          initcontactor(element)
-          this.one.inited.push(element.uin)
-        }
-      });
-    }
-  },
-  beforeUnmount() {
+  }, beforeUnmount() {
     window.removeEventListener('resize', this.handleResize); // 在组件销毁前移除事件监听
-  },
-  components: {
+  }, components: {
     sidebar,
     friendlist,
     RouterView,
@@ -122,16 +88,49 @@ export default {
         makeTips.info("欢迎使用")
         this.showauth = false
       }
-    }
+    },exchange(uin){
+      console.log("update store")
+      if (this.windowWidth < 600) {
+          this.showOther = false
+          this.showWindow = true
+      }
+    } 
+  }, beforeCreate(){
+    init();
+  }, watch: {
+    acting(newValue,oldValue) {
+      if (newValue.uin) {
+        if (this.windowWidth < 600) {
+        console.log(`${newValue},${oldValue}`)
+        if (newValue.uin != 10000) {
+          this.showOther = false
+          this.showWindow = true
+        } else if (oldValue.uin != 10000) {
 
-  }
+        } else {
+          this.showOther = false
+          this.showWindow = true
+        }
+      }
+        console.log(newValue)
+        console.log("选中" + this.acting.name)
+      }
+    },
+    'global.chatting'(newValue,oldValue){
+      console.log(newValue? "开始聊天啦" : "回到列表啦")
+      if (!newValue){
+        this.showOther = true
+        this.showWindow = false
+      }
+    }
+  },
 }
 </script>
 
 <template>
   <AuthLogin v-if="showauth" @get="tryauth"/>
   <sidebar v-if="showOther" />
-  <friendlist v-if="showOther" />
+  <friendlist v-if="showOther" @changed="exchange" />
   <RouterView v-if="showWindow" />
 </template>
 

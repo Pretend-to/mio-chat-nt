@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router'
 import { getmain } from '../scripts/stroge';
 import { upmain,upconfig,getconfig } from '@/scripts/middleware';
 import ConfigSet from '@/components/ConfigSet.vue'
-import { watch } from 'vue';
+import makeTips from '@/scripts/tipsappend.js'
 
 
 
@@ -35,7 +35,8 @@ export default {
             this.currentstatus = 0
         },
         tocontactor() {
-            this.currentstatus = 1
+            // this.currentstatus = 1
+            makeTips.warn("此功能尚在维护中")
         },
         saveset(newuser,newcfg){
             console.log(newuser)
@@ -53,6 +54,7 @@ export default {
 <template>
     <div id="sidebar">
         <div class="avatar">
+            <div class="play"></div>
             <img :src="user.avatar" :alt="user.name">
         </div>
         <div class="options" id="side">
@@ -103,3 +105,34 @@ export default {
     </div>
     <ConfigSet v-if="configging" :user="user" :cfg="cfg" @leave="configging=!configging" @save="saveset" ></ConfigSet>
 </template>
+
+<style>
+
+.avatar{
+    position: relative;
+    z-index: 10;
+}
+.play {
+            position: absolute;
+            left: 60%;
+            top: 65%;
+            width: 16px;
+            height: 16px;
+            background-color: rgb(235,235,235);
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 20;
+        }
+
+        .play::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, rgb(52, 238, 143), rgb(54, 221, 150));
+        }
+</style>
