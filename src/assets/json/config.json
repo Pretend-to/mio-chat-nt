@@ -1,8 +1,8 @@
 {   
     "default":"lss233",
     "lss233":{
-        "baseurl":"https://pi.fcip.top:2888", 
+        "baseurl":"BASE_URL", 
         "resetprompt":"重置会话",
-        "loadprompt":"变成赛博"
+        "loadprompt":"加载预设 "
     }
 }
