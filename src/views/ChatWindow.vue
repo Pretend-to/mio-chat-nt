@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas'
 import Lss233 from '../scripts/adapter/lss233';
 import { MdPreview } from 'md-editor-v3';
 import makeTips from '@/scripts/tipsappend.js'
-import { getmain, getcfg } from '@/scripts/stroge';
+import { getmain } from '@/scripts/stroge';
 import ChooseList from '@/components/ChooseList.vue'
 import { useGlobalstore } from '../stores/global';
 import { useMsgsstore } from '../stores/revmsgs';
@@ -42,7 +42,11 @@ export default {
             playing: false,
             tasks,
             leng,
-            crtvoice:'关闭'
+            crtvoice: '关闭',
+            dldimg:'',
+            todld:false,
+            listype: 0, //语音，模型，消息
+            pickedmsg:0
         }
     }, methods: {
         handleKeyDown(event) {
@@ -76,8 +80,6 @@ export default {
                 makeTips.warn("请求发送失败")
                 console.log(error)
             }
-
-
         }, eemoji() {
             this.showemoji = !this.showemoji
         }, getemoji(e) {
@@ -108,7 +110,8 @@ export default {
         }, async reset() {
             this.one.init()
         }, tolist() {
-            this.contactor.uin = 10000
+            this.global.alldown()
+            this.global.tochat(false);
         }, adjustTextareaHeight() {
             if (window.innerWidth < 600) {
                 this.textareaRef.style.height = '28px';
@@ -129,7 +132,8 @@ export default {
             let data = ["关闭"]
             const list = await this.one.getVoices()
             this.tochoose.list = data.concat(list)
-            this.tochoose.chosen = this.crtvoice =='关闭' ? 0 : (1 + list.findIndex(item => item === this.crtvoice));
+            this.listype = 1
+            this.tochoose.chosen = this.crtvoice == '关闭' ? 0 : (1 + list.findIndex(item => item === this.crtvoice));
             this.showchose = true
         }, async modelList() {
             let data = ["关闭"]
@@ -139,6 +143,18 @@ export default {
             this.showchose = true
         }, getList(data) {
             this.showchose = false
+            console.log(data)
+            console.log(this.listype)
+            if(this.listype == 1){
+                console.log("dsdasdasdas")
+                this.changevoice(data)
+            }else if(this.listype == 2){
+                this.changemodel(result)
+            }else if(this.listype == 3){
+                this.readmsg(data)
+            }
+        }, changevoice(data){
+            console.log(data)
             const result = data.list[data.chosen]
             this.crtvoice = result
             this.userInput = '切换语音 ' + result
@@ -171,16 +187,96 @@ export default {
             };
 
             audio.addEventListener('ended', endedHandler);
+        }, toimg() {
+            makeTips.info("请稍候，加紧制作中")
+            let ra = this.readra()
+            console.log(ra)
+            // 获取要截图的元素
+            const targetElement = this.$refs.chatWindow;
+
+            // 获取元素的实际宽度和高度
+
+            const rect = targetElement.getBoundingClientRect();
+            const elementWidth = rect.width;
+
+            console.log(rect.width);
+
+            // 计算子元素的高度之和
+            let totalHeight = 0;
+            for (let child of targetElement.children) {
+                totalHeight += child.offsetHeight;
+                console.log(child.offsetHeight)
+            }
+
+            // 使用 html2canvas 将元素转换为 canvas，并设置 windowWidth 和 windowHeight 选项
+            html2canvas(targetElement, {
+                windowWidth: elementWidth,
+                windowHeight: totalHeight * ra
+            }).then(canvas => {
+                // 将 canvas 转换为 base64 编码的 PNG 图片
+                makeTips.info("制作完成！请右键(长按)保存！")
+
+                const imgData = canvas.toDataURL('image/png');
+                this.dldimg = imgData;
+                this.todld = true
+
+            });
+        }, readra() {
+
+            var ratio = 0;
+            var screen = window.screen;
+            var ua = navigator.userAgent.toLowerCase();
+
+            if (window.devicePixelRatio !== undefined) {
+                ratio = window.devicePixelRatio;
+            }
+            else if (~ua.indexOf('msie')) {
+                if (screen.deviceXDPI && screen.logicalXDPI) {
+                    ratio = screen.deviceXDPI / screen.logicalXDPI;
+                }
+
+            }
+            else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+                ratio = window.outerWidth / window.innerWidth;
+            }
+
+            if (ratio) {
+                ratio = Math.round(ratio);
+            }
+            return ratio;
+
+        }, pickmsg(index){
+            const list = ["复制文本","删除消息"]
+            this.listype = 3
+            this.tochoose.list = list
+            this.tochoose.chosen = null
+            this.showchose = true
+            this.pickedmsg = index
+            console.log(this.acting.history[index])
+        }, readmsg(data){
+            console.log(data)
+            if (data.chosen == 0) {
+                var textarea = document.createElement("textarea");
+                textarea.value = this.acting.history[this.pickedmsg].content.text[0];
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+                makeTips.info("已复制")
+            }else{
+                this.acting.history.splice(this.pickedmsg,1)
+                makeTips.info("已删除")
+                this.global.stroge(); //持久化存储
+            }
         }
-
-
     }, mounted() {
         this.textareaRef = this.$refs.textarea;
         this.textareaRef.addEventListener('input', this.adjustTextareaHeight);
 
-        setTimeout(this.tobuttom, 0)
         console.log(this.acting)
-        if (this.acting.uin && this.acting.uin != 10000) this.showwindow = true
+        this.one = new Lss233(this.acting)
+        setTimeout(this.tobuttom, 50)
+        if (this.acting.uin && this.acting.uin != 10000) { this.showwindow = true }
     }, updated() {
         if (this.toupdate) {
             setTimeout(this.tobuttom, 0)
@@ -191,10 +287,14 @@ export default {
         ChooseList
     }, watch: {
         acting(newValue) {
-            console.log("选中" + this.acting.name)
-            this.showwindow = true
-            this.one = new Lss233(newValue)
-            this.toupdate = true
+            if (newValue.uin) {
+                this.showwindow = true
+                this.one = new Lss233(newValue)
+                this.toupdate = true
+                console.log(newValue)
+                console.log("选中" + this.acting.name)
+                console.log(this.showwindow)
+            }
         },
         async leng(newValue, oldValue) {
             if (newValue > oldValue) {
@@ -247,7 +347,7 @@ export default {
                         </svg>
                     </div>
                 </div>
-                <div id="share" @click="waiting()">
+                <div id="share" @click="toimg()">
                     <svg t="1696841917190" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="4742">
                         <path
@@ -264,13 +364,13 @@ export default {
                     <img v-if="item.role == 'other'" :src="acting.avatar" :alt="acting.name">
                     <img v-else :src="main.avatar" :alt="main.name">
                 </div>
-                <div class="msg">
+                <div class="msg" @dblclick="pickmsg(index)">
                     <div class="wholename">
                         <div class="title">{{ item.role == "other" ? acting.title : main.title }}</div>
                         <div class="name">{{ item.role == "other" ? acting.name : main.name }}</div>
                     </div>
                     <div v-if="item.content.text.length != 0 && item.content.image.length == 0 && item.content.voice.length == 0"
-                        class="content">
+                        class="content" >
                         <MdPreview v-for="(msg, index) of item.content.text" :key="index" editorId="preview-only"
                             :modelValue="msg" />
                     </div>
@@ -389,9 +489,34 @@ export default {
             <img src="@/assets/default.svg" alt="SVG图标">
         </div>
     </div>
+    <div v-if="todld"  @click.self="todld = false" class="black-overlay" >
+        <img  :src="dldimg" alt="pics"  id="theimg" >
+    </div>
+    
 </template>
 
 <style scoped>
+.black-overlay{
+
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1001;
+    /* z-index 属性设置元素的堆叠顺序。*/
+}
+
+#theimg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 75%;
+  max-width: 50%;
+}
+
 .background img {
     position: absolute;
     top: 50%;

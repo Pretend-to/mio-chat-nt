@@ -5,8 +5,10 @@ import Contactor from "../scripts/friends";
 export const useGlobalstore = defineStore('global', {
     state: () => ({
         friend: [],
+        chatting : false
     }),actions: {
         init() {
+            this.friend = []
             const main = getmain()
             main.contactor.forEach(element => {
                 const contactor = new Contactor( element );
@@ -44,6 +46,12 @@ export const useGlobalstore = defineStore('global', {
                     this.friend.push(contactor);
                 });
             }
+        },tochat(bool){
+            this.chatting = bool
+        },alldown(){
+            this.friend.forEach(element => {
+                element.active = false
+            });
         }
     },getters: {
         acting: (state) => state.friend.find(item => item.active === true) ? state.friend.find(item => item.active === true) : {}

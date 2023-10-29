@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router'
 import { getmain } from '../scripts/stroge';
 import { upmain,upconfig,getconfig } from '@/scripts/middleware';
 import ConfigSet from '@/components/ConfigSet.vue'
-import { watch } from 'vue';
+import makeTips from '@/scripts/tipsappend.js'
 
 
 
@@ -35,7 +35,8 @@ export default {
             this.currentstatus = 0
         },
         tocontactor() {
-            this.currentstatus = 1
+            // this.currentstatus = 1
+            makeTips.warn("此功能尚在维护中")
         },
         saveset(newuser,newcfg){
             console.log(newuser)

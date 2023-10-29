@@ -6,16 +6,19 @@ import { storeToRefs } from 'pinia'
 export default {
     data() {
         const global = useGlobalstore()
-        global.load()
         const { friend } = storeToRefs(global)
+        const { acting } = storeToRefs(global)
+
         return {
             global,
+            acting,
             friend
         }
     },
     methods: {
         thatone(item) {
             this.global.pickfriend(item);
+            this.global.tochat(true)
         }
         , addone() {
             makeTips.warn("此功能尚未开放")

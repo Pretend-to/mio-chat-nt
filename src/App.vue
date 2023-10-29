@@ -3,30 +3,34 @@ import { RouterView } from 'vue-router'
 import AuthLogin from './components/AuthLogin.vue';
 import sidebar from './components/SideBar.vue'
 import friendlist from './components/FriendLists.vue'
-import { useContactorstore } from '@/stores/contactor';
 import { watch } from 'vue';
 import { auth,init } from '@/scripts/middleware';
 import makeTips from '@/scripts/tipsappend.js'
+import { useGlobalstore } from '@/stores/global';
+import { storeToRefs } from 'pinia'
 
 
 export default {
   data() {
     const windowWidth = 0;
-    const one = useContactorstore();
+    const global = useGlobalstore()
+    const { acting } = storeToRefs(global)
     const showWindow = false;
     const showOther = true;
     const authinfo = 'fucker'
     const showauth = true
     return {
-      one,
       windowWidth,
       showWindow,
       showOther,
       authinfo,
-      showauth
+      showauth,
+      global,
+      acting
     }
-  },
-  mounted() {
+  }, mounted() {
+    this.global.load()
+
     const currerntcode = auth()
     if (currerntcode ==  'root'){
       makeTips.info("欢迎主人")
@@ -42,7 +46,7 @@ export default {
       if (newValue > 600) {
         this.showOther = true;
         this.showWindow = true;
-      } else if (this.one.uin == 10000) {
+      } else if (acting.uin == 10000) {
         this.showOther = true
         this.showWindow = false
       } else {
@@ -51,26 +55,9 @@ export default {
       }
     })
 
-    watch(() => this.one.uin, (newValue, oldValue) => {
-      if (this.windowWidth < 600) {
-        console.log(`${newValue},${oldValue}`)
-        if (newValue != 10000) {
-          this.showOther = false
-          this.showWindow = true
-        } else if (oldValue != 10000) {
-          this.showOther = true
-          this.showWindow = false
-        } else {
-          this.showOther = false
-          this.showWindow = true
-        }
-      }
-    })
-
-  },beforeUnmount() {
+  }, beforeUnmount() {
     window.removeEventListener('resize', this.handleResize); // 在组件销毁前移除事件监听
-  },
-  components: {
+  }, components: {
     sidebar,
     friendlist,
     RouterView,
@@ -110,7 +97,33 @@ export default {
     } 
   }, beforeCreate(){
     init();
-  }
+  }, watch: {
+    acting(newValue,oldValue) {
+      if (newValue.uin) {
+        if (this.windowWidth < 600) {
+        console.log(`${newValue},${oldValue}`)
+        if (newValue.uin != 10000) {
+          this.showOther = false
+          this.showWindow = true
+        } else if (oldValue.uin != 10000) {
+
+        } else {
+          this.showOther = false
+          this.showWindow = true
+        }
+      }
+        console.log(newValue)
+        console.log("选中" + this.acting.name)
+      }
+    },
+    'global.chatting'(newValue,oldValue){
+      console.log(newValue? "开始聊天啦" : "回到列表啦")
+      if (!newValue){
+        this.showOther = true
+        this.showWindow = false
+      }
+    }
+  },
 }
 </script>
 

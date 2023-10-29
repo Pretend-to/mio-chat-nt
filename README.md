@@ -10,23 +10,24 @@
 ## 简介
 仿 qqnt 的 gpt webUI，由 [@lss233](https://github.com/lss233) 的优秀开源项目 [chatgpt-mirai-qq-bot](https://github.com/lss233/chatgpt-mirai-qq-bot) 提供后端支持。
 
-## 现有功能
+## features
 - markdown 支持
 - 对话
+- 音频/图像支持
 - 移动端支持 (优化中) 
-
+- 访问/管理码
 
 ## TODO
+- 接入 OpenAI接口
 - 聊天记录以图像分享
-- 音频/图像支持
 - ~~小程序~~ (没打算过审)
 - UI 美化
-- 访问/管理码
-- 基于前端的联系人管理
-- prompt 管理
+- 基于前端的联系人与 prompt 管理
 - 流式响应
 - 重构💩山代码
 
+## TOTODO
+- **接入 ONEBot**
 
 ## 配置
 1. 克隆本项目。
