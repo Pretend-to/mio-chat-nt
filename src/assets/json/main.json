@@ -1,7 +1,7 @@
 {
     "name":"人类",
     "title":"群主",
-    "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1099834705",
+    "avatar":"/qava?qq=1099834705",
     "important":true,
     "uin":"10000",
     "uuid":"",
@@ -9,48 +9,48 @@
         {
             "name":"ChatGPT",
             "title":"AI",
-            "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1077879813",
+            "avatar":"/qava?qq=1077879813",
             "important":true,
             "uin":10001
         },
         {
             "name":"笑川酱❤️",
             "title":"孙笑川",
-            "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1906592980",
+            "avatar":"/qava?qq=1906592980",
             "important":true,
             "uin":10002
         },
         {
             "name":"香草",
             "title":"猫娘",
-            "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=2839716707",  
+            "avatar":"/qava?qq=2839716707",  
             "important":true,
             "uin":10003
         },
         {
             "name":"狂三",
             "title":"雌小鬼",
-            "avatar":"https://pi.fcip.top:4049/images/krumi.jpg",  
+            "avatar":"/mava/krumi.jpg",  
             "important":false,
             "uin":10004
         },
         {
             "name":"模拟器",
             "title":"日漫男主",
-            "avatar":"https://pi.fcip.top:4049/images/yjm.jpg",  
+            "avatar":"/mava/yjm.jpg",  
             "important":false,
             "uin":10005
         },
         {
             "name":"小灰",
             "title":"可莉",
-            "avatar":"https://pi.fcip.top:4049/images/sb.gif",  
+            "avatar":"/mava/sb.gif",  
             "important":false,
             "uin":10006
         },{
             "name":"rosbot",
             "title":"语音助手",
-            "avatar":"https://q1.qlogo.cn/g?b=qq&s=0&nk=1467106015",  
+            "avatar":"/qava?qq=1467106015",  
             "important":false,
             "uin":10007
         }

@@ -1,28 +1,27 @@
-import { getmsg } from "./middleware";
-
 class Contactor {
-    constructor({info = {}, lastchat = {}} = {}) {
+    constructor(info ) {
         this.uin = info.uin || '';
         this.name = info.name || '';
         this.avatar = info.avatar || '';
         this.important = info.important || false;
         this.title = info.title || '';
-        this.lasttime = this.time(lastchat?.time) || '';
-        this.content = this.content(lastchat?.text) || '';
+        this.history = [];
         this.active = false;
-        this.history = getmsg(info.uin);
+        this.toinit = true;
     }
 
-    time(last) {
+    lasttime() {
+        const last = this.history[this.history.length - 1]
         if (!last) {
             return '';
         }
-        
-        const currentTime = new Date();
-        const lastTime = new Date(last);
-        const timeDiff = currentTime - lastTime;
+
+        const currentTime = new Date().getTime();
+        const lastTime = new Date(last.time);
+        const timeDiff = currentTime - lastTime.getTime();
         
         if (timeDiff < 24 * 60 * 60 * 1000) {
+            this.toinit = false
             // 小于24小时，返回 xx:xx (小时:分钟)
             const hours = lastTime.getHours().toString().padStart(2, '0');
             const minutes = lastTime.getMinutes().toString().padStart(2, '0');
@@ -44,13 +43,31 @@ class Contactor {
         }
     }
 
-    content(last) {
-        if (!last) {
-            return '';
+    activeit(){
+        this.active = true
+        // if(this.toinit) this.init()
+    }
+    
+    addmsg(msg){
+        this.history.push(msg)
+    }
+
+    content(){
+        const msg = this.history[this.history.length - 1]
+        if(!msg) return ''
+        let type = '';
+        if(msg.content.text.length){
+            type = msg.content.text[0]
+        }else if(msg.content.image.length){
+            type = "[图片]"
         }else {
-            // 长度大于10，返回前8位并补充2位省略号
-            return last;
+            type = '[语音]'
         }
+        return type;
+    }
+
+    clean(){
+        this.history = []
     }
 }
 

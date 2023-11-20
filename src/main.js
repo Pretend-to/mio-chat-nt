@@ -1,13 +1,14 @@
 import 'md-editor-v3/lib/preview.css';
 import './assets/style.css'
 import './assets/tips.css'
-import { init } from './scripts/middleware'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-
-init()
+import localForage from 'localforage';
+localForage.config({
+  name: 'global'
+});
 
 const app = createApp(App)
 

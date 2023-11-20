@@ -1,5 +1,5 @@
 {   
     "baseurl":"http://api.krumio.com/lss233", 
     "resetprompt":"重置会话",
-    "loadprompt":"加载预设"
+    "loadprompt":"加载预设 "
 }
