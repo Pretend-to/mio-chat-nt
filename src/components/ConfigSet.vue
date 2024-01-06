@@ -43,6 +43,7 @@
   
 <script>
 import makeTips from '@/scripts/tipsappend.js'
+import localForage from 'localforage';
 
 
 export default {
@@ -63,23 +64,16 @@ export default {
         },
         remake(count) {
             var result = confirm("警告: 此操作将会重置所有缓存(包含聊天记录)，确定要执行此操作吗？");
-            if (result) {
-                makeTips.info("操作成功，即将刷新")
-                setTimeout(function(){
-                    location.reload(); // 刷新页面
-                },1000)
-                localStorage.clear(); // 清除本地存储数据
-
-                // 获取当前页面所有的 Cookie
-                var cookies = document.cookie.split(";");
-
-                // 遍历所有 Cookie，将它们的过期时间设置为过去的时间
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i];
-                    var eqPos = cookie.indexOf("=");
-                    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-                }
+            if (result) {                
+                localForage.clear().then(function () {
+                    setTimeout(function () {
+                        location.reload(); // 刷新页面
+                    }, 1000)
+                    makeTips.info("操作成功，即将刷新")
+                }).catch(function (err) {
+                    // 当出错时，此处代码运行
+                    makeTips.warn("操作失败，请手动清除")
+                });
 
             } else {
                 // 用户点击了取消按钮
@@ -221,7 +215,8 @@ img#avatar {
     margin-left: 150px;
     border: 1px solid black;
 }
-img.bkg{
+
+img.bkg {
     display: none;
     z-index: 0;
     width: 600px;
@@ -288,7 +283,7 @@ img.bkg{
     }
 
     #form_submit {
-        flex:  1 1 200px;
+        flex: 1 1 200px;
         border-top-left-radius: 50px;
         border-top-right-radius: 50px;
         border-bottom: 1px solid white;
@@ -331,4 +326,5 @@ img.bkg{
 
     }
 
-}</style>
+}
+</style>
