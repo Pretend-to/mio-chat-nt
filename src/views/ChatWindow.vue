@@ -57,21 +57,23 @@ export default {
             }
         }, async send() {
             this.$refs.textarea.focus()
-            try {
-                const msg = this.userInput
-                this.userInput = ''
-                const container = {
-                    role: 'user',
-                    time: new Date().getTime(),
-                    content: {
-                        voice: [],
-                        image: [],
-                        text: [msg]
-                    }
+
+            const msg = this.userInput
+            this.userInput = this.textareaRef.value = null
+            this.adjustTextareaHeight()
+            const container = {
+                role: 'user',
+                time: new Date().getTime(),
+                content: {
+                    voice: [],
+                    image: [],
+                    text: [msg]
                 }
-                this.acting.addmsg(container); //存储于store
-                this.toupdate = true
-                this.global.stroge(); //持久化存储
+            }
+            this.acting.addmsg(container); //存储于store
+            this.toupdate = true
+            this.global.stroge(); //持久化存储
+            try {
                 const reqid = await this.one.getRequest(msg);
                 console.log("创建请求：" + reqid)
                 this.tasks.resign(this.acting, reqid)
@@ -114,13 +116,14 @@ export default {
             this.global.tochat(false);
         }, adjustTextareaHeight() {
             if (window.innerWidth < 600) {
-                this.textareaRef.style.height = '28px';
-                this.textareaRef.style.height = this.textareaRef.scrollHeight - 8 + 'px';
+
+                this.textareaRef.style.height = this.textareaRef.value ? this.textareaRef.scrollHeight -4 + 'px':'24px';
 
                 if (parseInt(this.textareaRef.style.height) > 200) {
                     this.textareaRef.style.height = '200px';
                 }
             }
+            console.log(this.textareaRef.value)
         }, isValidInput(input) {
             // 使用正则表达式检查用户输入是否只包含换行符和空格
             const regex = /^[ \n]+$/;
@@ -168,7 +171,7 @@ export default {
                 this.global.stroge(); //持久化存储
             }
             if (response.continue) this.revmsg(task)
-            else console.log("任务处理完毕")
+            else console.log(content)
             this.toupdate = true
         }, toplay(time) {
             const audioId = `voice-${time}`;
@@ -369,17 +372,17 @@ export default {
                         <div class="title">{{ item.role == "other" ? acting.title : main.title }}</div>
                         <div class="name">{{ item.role == "other" ? acting.name : main.name }}</div>
                     </div>
-                    <div v-if="item.content.text.length != 0 && item.content.image.length == 0 && item.content.voice.length == 0"
+                    <div v-if="item.content.text.length"
                         class="content" >
                         <MdPreview v-for="(msg, index) of item.content.text" :key="index" editorId="preview-only"
                             :modelValue="msg" />
                     </div>
-                    <div v-else-if="item.content.text.length == 0 && item.content.image.length != 0 && item.content.voice.length == 0"
+                    <div v-if="item.content.image.length"
                         class="content">
                         <MdPreview v-for="(img, index) of item.content.image" :key="index" editorId="preview-only"
                             :modelValue="'![pics](' + img + ')'" />
                     </div>
-                    <div v-else class="content">
+                    <div  v-if="item.content.voice.length" class="content">
                         <div class="voice-box">
                             <div class="icon" @click="toplay(item.time)">
                                 <svg v-if="!playing" t="1698576153001" viewBox="0 0 1024 1024" version="1.1"
@@ -480,7 +483,7 @@ export default {
             <div class="input-box">
                 <div class="input-content">
                     <textarea @keydown="handleKeyDown" ref="textarea" v-model="userInput" @click="updateCursorPosition"
-                        placeholder="按 Ctrl + Enter 以发送"></textarea>
+                        ></textarea>
                 </div>
                 <button @click.prevent="send" :disabled="!userInput || !isValidInput(userInput)" id="sendButton">发送</button>
             </div>

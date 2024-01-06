@@ -199,6 +199,8 @@ export default {
     flex-basis: none;
     min-height: 0;
     padding-top: 8px;
+    background-color: rgb(243,242,248);
+    box-shadow: 0px -1px 2px rgba(0,0,0,0.1);
   }
 
   .input-box {
