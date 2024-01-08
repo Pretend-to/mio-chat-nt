@@ -1,9 +1,8 @@
 <script>
-import { useGlobalstore } from '../stores/global';
+import { useGlobalstore } from '@/stores/global'
 
 
 export default {
-
     data() {
         const contactor = useContactorstore()
         const sb = getinfo(contactor.uin)
@@ -15,15 +14,15 @@ export default {
     }, mounted() {
         watch(() => this.contactor.uin, (newValue, oldValue) => {
             this.sb = getinfo(newValue)
-        });
+        })
     },
     methods: {
         startchat() {
             this.contactor.editing = false
-            const element = document.querySelector("#unchoosen");
-            element.click();
+            const element = document.querySelector('#unchoosen')
+            element.click()
         },
-        saveset(e,smb){
+        saveset(e, smb) {
             updatesb(smb)
         }
     }
@@ -40,7 +39,7 @@ export default {
                 </div>
                 <div id="t1">
                     <div id="c-name">
-                        <input type="text" v-model="sb.name" />
+                        <input type="text" v-model="sb.name"/>
                     </div>
                     <div id="c-avatar">
                         <input type="text" v-model="sb.avatar">
@@ -49,22 +48,22 @@ export default {
             </div>
             <div id="btm">
                 <div id="c-title">
-                预设名<input type="text" v-model="sb.title" />
-            </div>
-            <div id="c-content">
-                预设人格<textarea></textarea>
-            </div>
-            <div id="bt-place">
-                <button @click="saveset(e, sb)">确认</button>
-                <button @click="startchat">聊天</button>
+                    预设名<input type="text" v-model="sb.title"/>
+                </div>
+                <div id="c-content">
+                    预设人格<textarea></textarea>
+                </div>
+                <div id="bt-place">
+                    <button @click="saveset(e, sb)">确认</button>
+                    <button @click="startchat">聊天</button>
+                </div>
             </div>
         </div>
-            </div>
 
 
     </div>
 </template>
-    
+
 
 <style scoped>
 /* div{
@@ -72,7 +71,7 @@ export default {
 } */
 
 input {
-    border: 0px;
+    border: 0;
     width: 100%;
 }
 
@@ -91,7 +90,7 @@ input {
     top: 30%;
     width: 100%;
     height: 70%;
-    padding: 8px 0px;
+    padding: 8px 0;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
@@ -137,40 +136,47 @@ img#avatar {
     border-radius: 50%;
     width: 100px;
 }
+
 /* #btm *{
     border: 1px solid black;
 } */
-#btm{
+#btm {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-#c-content{
+
+#c-content {
     flex-grow: 1;
     padding: 8px;
     display: flex;
-    text-wrap: nowrap;
+    text-wrap: none;
 }
-#c-title{
+
+#c-title {
     padding: 8px;
     display: flex;
-    text-wrap: nowrap;
+    text-wrap: none;
 }
-#c-title input{
+
+#c-title input {
     margin-left: 24px;
 }
-#bt-place{
+
+#bt-place {
     height: 50px;
     margin-bottom: 8px;
     display: flex;
 }
-#bt-place button{
+
+#bt-place button {
     flex-grow: 1;
     height: 100%;
     width: 100px;
 }
-textarea{
+
+textarea {
     flex-grow: 1;
     margin-left: 8px;
 }

@@ -1,28 +1,28 @@
-import { defineStore } from "pinia";
-import { getmain,setglobal,getglobal } from "../scripts/stroge";
-import Contactor from "../scripts/friends";
+import { defineStore } from 'pinia'
+import { getmain, setglobal, getglobal } from '../scripts/stroge'
+import Contactor from '../scripts/friends'
 
 export const useGlobalstore = defineStore('global', {
     state: () => ({
         friend: [],
-        chatting : false
-    }),actions: {
+        chatting: false
+    }), actions: {
         init() {
             this.friend = []
             const main = getmain()
             main.contactor.forEach(element => {
-                const contactor = new Contactor( element );
-                this.friend.push(contactor);
-            });
+                const contactor = new Contactor(element)
+                this.friend.push(contactor)
+            })
             return this.friend.length
-        },pickfriend(sb){
+        }, pickfriend(sb) {
             this.friend.forEach(element => {
-                element.active=false
-            });
+                element.active = false
+            })
             const activeone = this.friend.find(item => item.uin === sb.uin)
             activeone.activeit()
             return activeone
-        },whoactive(){
+        }, whoactive() {
             const one = this.friend.find(item => item.active === true)
             if (!one) {
                 const main = getmain()
@@ -31,29 +31,29 @@ export const useGlobalstore = defineStore('global', {
                 return self
             }
             return one
-        },stroge(){
+        }, stroge() {
             setglobal(this.friend)
-        },async load(){
+        }, async load() {
             const data = await getglobal()
             console.log(data)
-            if(!data) this.init()
-            else { 
+            if (!data) this.init()
+            else {
                 data.forEach(element => {
-                    const contactor = new Contactor( element );
+                    const contactor = new Contactor(element)
                     element.history.forEach(message => {
                         contactor.history.push(message)
                     })
-                    this.friend.push(contactor);
-                });
+                    this.friend.push(contactor)
+                })
             }
-        },tochat(bool){
+        }, tochat(bool) {
             this.chatting = bool
-        },alldown(){
+        }, alldown() {
             this.friend.forEach(element => {
                 element.active = false
-            });
+            })
         }
-    },getters: {
+    }, getters: {
         acting: (state) => state.friend.find(item => item.active === true) ? state.friend.find(item => item.active === true) : {}
-      },
+    }
 })

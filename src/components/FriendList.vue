@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-    <div id="friendlists">
+    <div id="friendList">
         <div class="upsidebar" id="friends">
             <div class="search" id="people">
                 <svg t="1695130526763" class="listicon" viewBox="0 0 1024 1024" version="1.1"
@@ -62,3 +62,12 @@ export default {
         </div>
     </div>
 </template>
+
+<style scoped>
+#friendList {
+    height: calc(100% - 40);
+    flex-basis: 100%;
+    max-width: 100%;
+    border: 0;
+}
+</style>
