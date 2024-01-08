@@ -1,35 +1,33 @@
 <script>
-export default{
-    data(){
-        return{
-        }
-    },methods:{
-        leave(){
-            this.$emit("leave")
+export default {
+    data() {
+        return {}
+    }, methods: {
+        leave() {
+            this.$emit('leave')
         },
-        save(){
-            this.$emit("save",this.tochoose)
+        save() {
+            this.$emit('save', this.tochoose)
         },
-        choose(index){
+        choose(index) {
             this.tochoose.chosen = index
             this.save()
         }
-    },props:["tochoose"],
-      emits:['leave', 'save']
+    }, props: ['tochoose'],
+    emits: ['leave', 'save']
 }
 </script>
 
 <template>
     <div class="bkg" @click="leave"></div>
     <div class="form">
-        <div v-for="(item,index) of tochoose.list" @click="choose(index)" class="case" :id="tochoose.chosen == index ? 'chosen' : null" >
+        <div v-for="(item,index) of tochoose.list" @click="choose(index)" class="case" :id="tochoose.chosen == index ? 'chosen' : null">
             <div class="info">
-                {{item}}
+                {{ item }}
             </div>
         </div>
     </div>
 </template>
-
 
 
 <style scoped>

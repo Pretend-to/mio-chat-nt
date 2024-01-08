@@ -33,6 +33,12 @@ export default defineConfig({
         target: 'http://mio.fcip.top:6050/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api2/, '')
+      },
+      '/server': {
+        // 后台地址
+        target: 'http://127.0.0.1:1889',
+        changeOrigin: true,
+        rewrite: path => path.replace('/server', '')
       }
     }
   }
