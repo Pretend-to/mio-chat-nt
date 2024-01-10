@@ -1,18 +1,18 @@
 <script>
 import { RouterView } from 'vue-router'
 import AuthLogin from './components/AuthLogin.vue'
-import sidebar from './components/SideBar.vue'
-import friendlist from './components/FriendLists.vue'
+import Sidebar from './components/Sidebar.vue'
+import FriendList from './components/FriendList.vue'
 import { watch } from 'vue'
 import { auth, init } from '@/scripts/middleware'
 import makeTips from '@/scripts/tipsappend.js'
-import { useGlobalstore } from '@/stores/global'
+import { useGlobalStore } from '@/stores/global'
 import { storeToRefs } from 'pinia'
 
 export default {
     data() {
         const windowWidth = 0
-        const global = useGlobalstore()
+        const global = useGlobalStore()
         const {acting} = storeToRefs(global)
         const showWindow = false
         const showOther = true
@@ -45,7 +45,7 @@ export default {
             if (newValue > 600) {
                 this.showOther = true
                 this.showWindow = true
-            } else if (acting.uin == 10000) {
+            } else if (acting.uin === 10000) {
                 this.showOther = true
                 this.showWindow = false
             } else {
@@ -57,8 +57,8 @@ export default {
     }, beforeUnmount() {
         window.removeEventListener('resize', this.handleResize) // 在组件销毁前移除事件监听
     }, components: {
-        sidebar,
-        friendlist,
+        Sidebar,
+        FriendList,
         RouterView,
         AuthLogin
     }, methods: {
@@ -128,111 +128,11 @@ export default {
 
 <template>
     <AuthLogin v-if="showauth" @get="tryauth"/>
-    <sidebar v-if="showOther"/>
-    <friendlist v-if="showOther" @changed="exchange"/>
+    <Sidebar v-if="showOther"/>
+    <FriendList v-if="showOther" @changed="exchange"/>
     <RouterView v-if="showWindow"/>
 </template>
 
-<style>
-@media (max-width: 600px) {
-    #friendlists {
-        height: calc(100% - 40px);
-        flex-basis: 100%;
-        max-width: 100%;
-        border: 0;
-    }
+<style scoped>
 
-    #app {
-        flex-direction: column-reverse;
-    }
-
-    #sidebar {
-        background-color: rgb(250, 250, 250);
-        height: 48px;
-        min-width: 100%;
-        flex-direction: row;
-    }
-
-    #sidebar .avatar {
-        display: none;
-    }
-
-    .options#side {
-        flex-direction: row;
-    }
-
-    .options#side .up-half {
-        padding-top: 0;
-    }
-
-    .options#side .up-half,
-    .options#side .down-half {
-        padding-top: 24px;
-        flex-basis: 50%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-    }
-
-    #app {
-        border: none;
-        border-radius: 0;
-    }
-
-    body {
-        margin: 0;
-        height: 100vh;
-    }
-
-    .upsidebar#friends {
-        background-color: rgb(240, 240, 240);
-    }
-
-    .bu-add button,
-    .search#people {
-        background-color: white;
-    }
-
-    .inputbar {
-        flex-direction: column-reverse;
-        flex-basis: none;
-        min-height: 0;
-        padding-top: 8px;
-        background-color: rgb(243, 242, 248);
-        box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    .input-box {
-        margin-bottom: 4px;
-        display: flex;
-        flex-direction: row;
-        align-items: flex-end;
-
-    }
-
-    .input-content textarea {
-        height: 24px;
-        width: 100%;
-        background-color: rgb(255, 255, 255);
-    }
-
-    .input-content {
-        flex-grow: 0;
-        flex-wrap: wrap;
-        flex-direction: column;
-        max-width: calc(100% - 72px);
-        margin: 0 8px;
-    }
-
-    .input-box button {
-        margin: 0 8px;
-        height: 28px;
-    }
-
-    .inputbar > .options {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 16px;
-        border-top: 0;
-    }
-}</style>
+</style>

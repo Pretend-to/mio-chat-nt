@@ -1,6 +1,6 @@
 <script>
 import { RouterLink } from 'vue-router'
-import { getmain } from '../scripts/stroge'
+import { getmain } from '@/scripts/stroge'
 import { upmain, upconfig, getconfig } from '@/scripts/middleware'
 import ConfigSet from '@/components/ConfigSet.vue'
 import makeTips from '@/scripts/tipsappend.js'
@@ -23,10 +23,10 @@ export default {
     },
     computed: {
         chatting() {
-            return this.currentstatus == 0 ? 'choosen' : 'unchoosen'
+            return this.currentstatus === 0 ? 'choosen' : 'unchoosen'
         },
         editing() {
-            return this.currentstatus == 1 ? 'choosen' : 'unchoosen'
+            return this.currentstatus === 1 ? 'choosen' : 'unchoosen'
         }
     },
     methods: {
@@ -106,9 +106,28 @@ export default {
 </template>
 
 <style>
-.avatar {
+#sidebar {
     position: relative;
-    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    background-color: rgb(235, 235, 235);
+
+    .avatar {
+        position: relative;
+        z-index: 10;
+        margin: 20px 8px;
+    }
+}
+
+.options#side {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .play {
@@ -133,5 +152,35 @@ export default {
     height: 70%;
     border-radius: 50%;
     background: linear-gradient(to bottom, rgb(52, 238, 143), rgb(54, 221, 150));
+}
+
+@media (max-width: 600px) {
+    #sidebar {
+        background-color: rgb(250, 250, 250);
+        height: 48px;
+        min-width: 100%;
+        flex-direction: row;
+    }
+
+    #sidebar .avatar {
+        display: none;
+    }
+
+    .options#side {
+        flex-direction: row;
+    }
+
+    .options#side .up-half {
+        padding-top: 0;
+    }
+
+    .options#side .up-half,
+    .options#side .down-half {
+        padding-top: 24px;
+        flex-basis: 50%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
 }
 </style>

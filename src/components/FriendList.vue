@@ -1,11 +1,11 @@
 <script>
 import makeTips from '@/scripts/tipsappend.js'
-import { useGlobalstore } from '@/stores/global'
+import { useGlobalStore } from '@/stores/global'
 import { storeToRefs } from 'pinia'
 
 export default {
     data() {
-        const global = useGlobalstore()
+        const global = useGlobalStore()
         const {friend} = storeToRefs(global)
         const {acting} = storeToRefs(global)
 
@@ -65,9 +65,43 @@ export default {
 
 <style scoped>
 #friendList {
-    height: calc(100% - 40);
     flex-basis: 100%;
-    max-width: 100%;
     border: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    max-width: 200px;
+    border-left: 1px solid rgba(161, 154, 154, 0.626);
+    border-right: 1px solid rgba(161, 154, 154, 0.626);
+
+    .upsidebar#friends {
+        justify-content: space-between;
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(255, 255, 255);
+        flex: 0 0 32px;
+        padding: 22px 12px 8px 12px;
+        align-items: stretch;
+        height: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    #friendList {
+        height: calc(100% - 40px);
+        flex-basis: 100%;
+        max-width: 100%;
+        border: 0;
+    }
+
+    .upsidebar#friends {
+        background-color: rgb(240, 240, 240);
+    }
+
+    .bu-add button,
+    .search#people {
+        background-color: white;
+    }
 }
 </style>

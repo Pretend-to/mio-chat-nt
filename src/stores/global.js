@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { getmain, setglobal, getglobal } from '../scripts/stroge'
+import { getmain, setglobal, getglobal } from '@/scripts/stroge'
 import Contactor from '../scripts/friends'
 
-export const useGlobalstore = defineStore('global', {
+export const useGlobalStore = defineStore('global', {
     state: () => ({
         friend: [],
         chatting: false
