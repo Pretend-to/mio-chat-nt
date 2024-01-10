@@ -1,15 +1,3 @@
-<template>
-    <div class="container">
-        <div class="title">请输入鉴权码以完成身份认证</div>
-        <div class="code"><input ref="code" type="text" @keyup.enter="getcode"></div>
-        <div class="button">
-            <button id="getcode">取消</button>
-            <button id="quit" @click="getcode">确认</button>
-        </div>
-    </div>
-    <div class="bkg"></div>
-</template>
-
 <script>
 import { auth } from '@/scripts/middleware'
 import makeTips from '@/scripts/tipsappend.js'
@@ -31,6 +19,19 @@ export default {
 }
 
 </script>
+
+<template>
+    <div class="container">
+        <div class="title">请输入鉴权码以完成身份认证</div>
+        <div class="code"><input ref="code" type="text" @keyup.enter="getcode"></div>
+        <div class="button">
+            <button id="getcode">取消</button>
+            <button id="quit" @click="getcode">确认</button>
+        </div>
+    </div>
+    <div class="bkg"></div>
+</template>
+
 <style scoped>
 .bkg {
     position: fixed;

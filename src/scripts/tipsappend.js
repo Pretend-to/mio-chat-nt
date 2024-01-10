@@ -1,7 +1,7 @@
 function appendTip(tip) {
   console.log(tip)
 
-  var icon = tip.type == 'warn' ? `
+  var icon = tip.type === 'warn' ? `
       <svg  style="padding-left: 16px;" t="1697450824459" class="icon" viewBox="0 0 1024 1024"
                   version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6147" width="16" height="16">
                   <path
@@ -20,7 +20,7 @@ function appendTip(tip) {
       <div ref="box" class="tipsbox">
           <div class="fade-in">
           ${icon}
-              <div class="tip" style="padding: 0px 16px;">
+              <div class="tip" style="padding: 0 16px;">
                   ${tip.info}
               </div>
           </div>

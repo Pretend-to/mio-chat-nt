@@ -1,8 +1,7 @@
 import localForage from 'localforage'
 
 export function getmain() {
-    const storedData = JSON.parse(localStorage.getItem('main'))
-    return storedData
+    return JSON.parse(localStorage.getItem('main'))
 }
 
 export function savemain(main) {
@@ -24,8 +23,7 @@ export function setconfig(cfg) {
 }
 
 export function getcfg() {
-    const storedData = JSON.parse(localStorage.getItem('config'))
-    return storedData
+    return JSON.parse(localStorage.getItem('config'))
 }
 
 export function setglobal(cfg) {
