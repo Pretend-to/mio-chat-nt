@@ -1,98 +1,29 @@
-
-body {
-    overflow: hidden;
-    height: 98vh;
-}
-
-#app{
-    position: relative;
-    border: 1px solid rgba(94, 94, 94, 0.886);
-    border-radius: 10px;
-    overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-#sidebar {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 64px;
-    min-width: 64px;
-    max-width: 64px;
-    background-color: rgb(235, 235, 235);
-}
-
-#friendlists {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    min-width: 200px;
-    max-width: 200px;
-    border-left: 1px solid rgba(161, 154, 154, 0.626);
-    border-right: 1px solid rgba(161, 154, 154, 0.626);
-}
-
-#chatwindow {
-    z-index: 1;
-    min-width: 1px;
-    position: relative;
-    display: flex;
-    flex-grow: 1;
-    background-color: rgb(241, 241, 241);
-    flex-direction: column;
-}
-
-.upsidebar#friends {
-    justify-content: space-between;
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(255, 255, 255);
-    flex: 0 0 32px;
-    padding: 22px 12px 8px 12px;
-    align-items: stretch;
-    height: 32px;
-}
-
-.upsidebar#chat {
-    flex-basis: 60px;
-    flex-shrink: 0;
-    height: 60px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(161, 154, 154, 0.626);
-}
-
 input#tosearch {
     width: calc(100% - 18px);
     margin-top: 3px;
     padding-left: 5px;
     height: 18px;
     background-color: transparent;
-    border: 0px;
+    border: 0;
 }
 
 input#tosearch:focus {
     outline: none;
-    border: 0px;
+    border: 0;
 }
 
 button#searchButton {
     width: 16px;
-    border: 0px;
+    border: 0;
     border-radius: 5px;
     margin-left: 8px;
-    text-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .search {
     flex-grow: 1;
     border-radius: 5px;
-    background-color: rgb(245 245, 245);
+    background-color: rgb(245, 245, 245);
     height: 25px;
     display: flex;
     padding: 2px 4px;
@@ -118,32 +49,17 @@ button#addcont {
     font-size: 16px;
 }
 
-.inputbar {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    border: 0px solid rgba(161, 154, 154, 0.626);
-}
-
 @media (min-width: 600px) {
-    .inputbar {
-
-    flex-basis: 176px;
+    .chat-frame {
+        flex-basis: 176px;
     }
 }
 
 .chat-icon {
-    padding: 4px 8px 0px 0px;
+    padding: 4px 8px 0 0;
     width: 24px;
     height: 24px;
 }
-
-.inputbar>.options {
-    display: flex;
-    border-top: 1px solid rgba(128, 128, 128, 0.502);
-    padding: 4px 8px;
-}
-
 
 .message-window {
     flex-grow: 3;
@@ -207,22 +123,21 @@ button#addcont {
 }
 
 .wholename {
-    margin: 0px 8px;
+    margin: 0 8px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
 }
 
-.wholename>.name,
-.wholename>.title {
+.wholename > .name,
+.wholename > .title {
     font-size: 10px;
     margin: 4px;
-    text-wrap: nowrap;
+    white-space: nowrap;
 
 }
 
-
-.wholename>.title {
+.wholename > .title {
     font-size: 6px;
     font-family: Arial, sans-serif;
     color: rgb(0, 153, 255);
@@ -231,7 +146,7 @@ button#addcont {
     border-radius: 5px;
 }
 
-.wholename>.name {
+.wholename > .name {
     padding-top: 1px;
     font-family: Arial, sans-serif;
     color: rgb(120, 124, 127)
@@ -250,7 +165,8 @@ button#addcont {
     border-radius: 8px;
     position: relative;
 }
-.message-container#user p{
+
+.message-container#user p {
     color: aliceblue;
     background-color: rgb(0, 153, 255);
 }
@@ -260,34 +176,30 @@ button#addcont {
 }
 
 .message-container#user .loader {
-    left:-32px;
+    left: -32px;
     top: calc(45% - 5px)
-    
+
 }
 
-.message-container#other>.msg>.content {
+.message-container#other > .msg > .content {
     background-color: rgb(255, 255, 255);
 }
 
-
-
-.message-container#user>.msg>.content {
+.message-container#user > .msg > .content {
     background-color: rgb(0, 153, 255);
-
 }
 
-
-
 .content img {
-    margin: 8px 0px;
+    margin: 8px 0;
     max-width: 100%;
     border-radius: 5%;
 }
+
 .people {
     overflow-y: auto;
 }
 
-.people>.lists {
+.people > .lists {
 
     display: flex;
     padding: 4px 8px;
@@ -297,27 +209,25 @@ button#addcont {
     /* border: 1px solid pink; */
 }
 
-
-
-.people>.lists#important {
+.people > .lists#important {
     background-color: rgb(240, 240, 240);
 }
 
-.people>.lists:hover {
-    background-color: rgb(240,240,240)
+.people > .lists:hover {
+    background-color: rgb(240, 240, 240)
     /* border: 1px solid pink; */
 }
 
-.people>.lists#important:hover {
+.people > .lists#important:hover {
     background-color: rgb(231, 231, 231);
     /* border: 1px solid pink; */
 }
 
-.people>.lists#active {
+.people > .lists#active {
     background-color: rgb(0, 153, 255);
 }
 
-.people>.lists>.avatar {
+.people > .lists > .avatar {
     margin-top: 10px;
     max-width: 42px;
     min-width: 42px;
@@ -349,14 +259,14 @@ button#addcont {
     min-width: calc(100% - 42px);
 }
 
-.info #time{
+.info #time {
     color: gray;
     font-size: 10px;
     flex-grow: 1;
     text-align: right;
 }
 
-.info #msgctt{
+.info #msgctt {
     flex-basis: 100%;
     padding-right: 16px;
     color: gray;
@@ -367,94 +277,10 @@ button#addcont {
     text-overflow: ellipsis; /* 显示省略号 */
 }
 
-.people>.lists#active * {
+.people > .lists#active * {
     color: aliceblue;
 }
 
-.input-box {
-    flex-grow: 1;
-    padding: 0px 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    border: 0px solid black;
-}
-
-
-.input-box button {
-    white-space: nowrap;
-    color: aliceblue;
-    border-radius: 5px;
-    border: 0px;
-    background-color: rgb(0, 153, 255);
-    padding: 4px 16px;
-    margin-bottom: 8px;
-}
-.input-box button:hover {
-    background-color: rgb(0, 147, 245);
-}
-.input-box button:active {
-    background-color: rgb(0, 134, 224);
-}
-
-.input-content {
-    flex-grow: 1;
-}
-
-.input-content {
-    flex-wrap: wrap;
-    display: flex;
-    background-color: rgb(241, 241, 241);
-    border: 0px;
-    flex-grow: 1;
-    width: 100%;
-}
-
-.input-content textarea {
-    overflow-y: auto;
-    resize: none;
-    font-size: 16px;
-    background-color: rgb(241, 241, 241);
-    border: 0px;
-    flex-grow: 1;
-    width: 100%;
-}
-
-.input-content textarea:focus {
-    border: 0px;
-    outline: none;
-}
-
-
-.bu-emoji {
-    position: relative;
-}
-
-p#ho-emoji {
-    text-wrap: nowrap;
-    display: none;
-    font-size: 12px;
-    padding: 2px 4px;
-    background-color: white;
-    /* 设置背景为纯白色 */
-    border: none;
-    /* 删除边框线 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    /* 添加四周阴影效果 */
-    position: absolute;
-    top: 80%;
-    left: 50%;
-    transform: translateX(-60%);
-}
-
-
-.bu-emoji:hover p#ho-emoji {
-    display: block;
-}
-
-svg:hover {
-    fill: rgb(0, 153, 255);
-}
 
 .side-icon {
     display: flex;
@@ -470,37 +296,28 @@ svg:hover {
 .side-icon#choosen {
     background-color: rgb(225, 225, 225)
 }
+
 .side-icon#choosen svg {
-    fill:rgb(0, 153, 255)
+    fill: rgb(0, 153, 255)
 }
+
 .side-icon svg {
     width: 24px;
 }
 
-.up-half  .side-icon{
+.up-half .side-icon {
     margin-bottom: 24px;
 }
-.down-half > .side-icon{
+
+.down-half > .side-icon {
     margin-bottom: 16px;
 }
 
-
-#sidebar>.avatar {
-    margin: 20px 8px;
-}
-
-.options#side {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.up-half  .side-icon svg:hover {
+.up-half .side-icon svg:hover {
     fill: rgb(0, 0, 0);
 }
 
-.up-half  .side-icon:hover {
+.up-half .side-icon:hover {
     border: none;
     background-color: rgb(225, 225, 225)
 }
@@ -509,14 +326,6 @@ svg:hover {
     width: 12px;
     padding-top: 16px;
 }
-
-
-emoji-picker {
-    position: absolute;
-    top: -412px;
-    right: -320px;
-    /* 其他样式属性 */
-  }
 
 
 .default-theme p {
@@ -531,10 +340,11 @@ emoji-picker {
     flex: 1;
     box-sizing: border-box;
     overflow: auto;
-    padding: 0 0 ;
+    padding: 0 0;
 }
-.content img{
-    margin: none;
+
+.content img {
+    margin: 0;
     border: none;
-    max-width:300px;
+    max-width: 300px;
 }

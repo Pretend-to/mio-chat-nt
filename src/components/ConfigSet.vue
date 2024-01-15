@@ -7,28 +7,28 @@
             <img id="avatar" :src="user.avatar" alt="">
             <div v-if="!devsets" id="form_submit">
                 <div id="c-name" class="form">
-                    用户名：<input type="text" v-model="user.name" />
+                    用户名：<input type="text" v-model="user.name"/>
                 </div>
                 <div id="c-title" class="form">
-                    称号：<input type="text" v-model="user.title" />
+                    称号：<input type="text" v-model="user.title"/>
                 </div>
                 <div id="c-avatar" class="form">
                     头像：<input type="text" v-model="user.avatar">
                 </div>
 
                 <div id="c-baseurl" class="form">
-                    baseurl：<input type="text" v-model="cfg.lss233.baseurl" />
+                    baseurl：<input type="text" v-model="cfg.lss233.baseurl"/>
                 </div>
                 <div id="c-respmt" class="form">
-                    重置：<input type="text" v-model="cfg.lss233.resetprompt" />
+                    重置：<input type="text" v-model="cfg.lss233.resetprompt"/>
                 </div>
 
                 <div id="c-loadpmt" class="form">
-                    加载：<input type="text" v-model="cfg.lss233.loadprompt" />
+                    加载：<input type="text" v-model="cfg.lss233.loadprompt"/>
                 </div>
 
                 <div id="c-uuid" class="form">
-                    uuid：<input type="text" v-model="user.uuid" disabled />
+                    uuid：<input type="text" v-model="user.uuid" disabled/>
                 </div>
             </div>
             <div id="bt-place">
@@ -40,20 +40,20 @@
 
     </div>
 </template>
-  
+
 <script>
 import makeTips from '@/scripts/tipsappend.js'
-import localForage from 'localforage';
+import localForage from 'localforage'
 
 
 export default {
     data() {
-        const devsets = false;
+        const devsets = false
         return {
             devsets
         }
     },
-    props: ["user", 'cfg'],
+    props: ['user', 'cfg'],
     emits: ['leave', 'save'],
     methods: {
         leave() {
@@ -63,35 +63,35 @@ export default {
             this.$emit('save', user, cfg)
         },
         remake(count) {
-            var result = confirm("警告: 此操作将会重置所有缓存(包含聊天记录)，确定要执行此操作吗？");
-            if (result) {                
+            var result = confirm('警告: 此操作将会重置所有缓存(包含聊天记录)，确定要执行此操作吗？')
+            if (result) {
                 localForage.clear().then(function () {
                     setTimeout(function () {
-                        location.reload(); // 刷新页面
+                        location.reload() // 刷新页面
                     }, 1000)
-                    makeTips.info("操作成功，即将刷新")
+                    makeTips.info('操作成功，即将刷新')
                 }).catch(function (err) {
                     // 当出错时，此处代码运行
-                    makeTips.warn("操作失败，请手动清除")
-                });
+                    makeTips.warn('操作失败，请手动清除')
+                })
 
             } else {
                 // 用户点击了取消按钮
-                makeTips.info("操作已取消");
+                makeTips.info('操作已取消')
             }
         }
     },
     computed: {
         active() {
-            return this.devsets ? "inactive" : "active"
+            return this.devsets ? 'inactive' : 'active'
         },
         active2() {
-            return this.devsets ? "active" : "inactive"
+            return this.devsets ? 'active' : 'inactive'
         }
     }
-};
+}
 </script>
-  
+
 
 <style scoped>
 #body {
