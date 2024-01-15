@@ -8,51 +8,39 @@
     "contactor":[
         {
             "name":"ChatGPT",
-            "title":"AI",
+            "title":"聊天",
             "avatar":"/qava?qq=1077879813",
             "important":true,
             "uin":10001
         },
         {
-            "name":"笑川酱❤️",
-            "title":"孙笑川",
-            "avatar":"/qava?qq=1906592980",
+            "name":"Elysia♪~",
+            "title":"爱莉",
+            "avatar":"/qava?qq=3038848622",  
             "important":true,
             "uin":10002
         },
         {
-            "name":"香草",
-            "title":"猫娘",
+            "name":"猫娘",
+            "title":"香草",
             "avatar":"/qava?qq=2839716707",  
             "important":true,
             "uin":10003
         },
         {
-            "name":"狂三",
-            "title":"雌小鬼",
-            "avatar":"/mava/krumi.jpg",  
+            "name":"终端",
+            "title":"linux",
+            "avatar":"/qava?qq=1077879813",  
             "important":false,
             "uin":10004
         },
         {
-            "name":"模拟器",
-            "title":"日漫男主",
-            "avatar":"/mava/yjm.jpg",  
+            "name":"笑川酱❤️",
+            "title":"孙狗",
+            "avatar":"/qava?qq=1906592980",
             "important":false,
             "uin":10005
-        },
-        {
-            "name":"小灰",
-            "title":"可莉",
-            "avatar":"/mava/sb.gif",  
-            "important":false,
-            "uin":10006
-        },{
-            "name":"rosbot",
-            "title":"语音助手",
-            "avatar":"/qava?qq=1467106015",  
-            "important":false,
-            "uin":10007
         }
+
     ]
 }

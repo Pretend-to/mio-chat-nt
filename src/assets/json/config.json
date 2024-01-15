@@ -1,7 +1,7 @@
 {   
     "default":"lss233",
     "lss233":{
-        "baseurl":"BASE_URL", 
+        "baseurl":"https://api.fcip.top/lss233", 
         "resetprompt":"重置会话",
         "loadprompt":"加载预设 "
     }
