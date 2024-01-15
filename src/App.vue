@@ -133,6 +133,104 @@ export default {
     <RouterView v-if="showWindow"/>
 </template>
 
-<style scoped>
+<style>
+@media (max-width: 600px) {
+  #friendlists {
+    height: calc(100% - 40px);
+    flex-basis: 100%;
+    max-width: 100%;
+    border: 0px;
+  }
 
-</style>
+  #app {
+    flex-direction: column-reverse;
+  }
+
+  #sidebar {
+    background-color: rgb(250, 250, 250);
+    height: 48px;
+    min-width: 100%;
+    flex-direction: row;
+  }
+
+  #sidebar .avatar {
+    display: none;
+  }
+
+  .options#side {
+    flex-direction: row;
+  }
+
+  .options#side .up-half {
+    padding-top: 0px;
+  }
+
+  .options#side .up-half,
+  .options#side .down-half {
+    padding-top: 24px;
+    flex-basis: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  #app {
+    border: none;
+    border-radius: 0px;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+  }
+
+  .upsidebar#friends {
+    background-color: rgb(240, 240, 240);
+  }
+
+  .bu-add button,
+  .search#people {
+    background-color: white;
+  }
+
+  .inputbar {
+    flex-direction: column-reverse;
+    flex-basis: none;
+    min-height: 0;
+    padding-top: 8px;
+  }
+
+  .input-box {
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+
+  }
+
+  .input-content textarea {
+    height: 24px;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .input-content {
+    flex-grow: 0;
+    flex-wrap: wrap;
+    flex-direction: column;
+    max-width: calc(100% - 72px);
+    margin: 0px 8px;
+  }
+
+  .input-box button {
+    margin: 0px 8px;
+    height: 28px;
+  }
+
+  .inputbar>.options {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 16px;
+    border-top: 0px;
+  }
+}</style>

@@ -215,8 +215,7 @@ img#avatar {
     margin-left: 150px;
     border: 1px solid black;
 }
-
-img.bkg {
+img.bkg{
     display: none;
     z-index: 0;
     width: 600px;
@@ -283,7 +282,7 @@ img.bkg {
     }
 
     #form_submit {
-        flex: 1 1 200px;
+        flex:  1 1 200px;
         border-top-left-radius: 50px;
         border-top-right-radius: 50px;
         border-bottom: 1px solid white;
@@ -326,5 +325,4 @@ img.bkg {
 
     }
 
-}
-</style>
+}</style>

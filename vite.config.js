@@ -24,7 +24,7 @@ export default defineConfig({
     proxy: {
       '/qava': {
         // 后台地址
-        target: 'https://api.fcip.top/',
+        target: 'http://mio.fcip.top:6050/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api1/, '')
       },
