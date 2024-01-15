@@ -23,20 +23,14 @@ export default defineConfig({
     port: '5173',
     proxy: {
       '/qava': {
-        // 后台地址
+        // qq 头像反代地址
         target: 'https://api.fcip.top/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api1/, '')
       },
-      '/mava': {
-        // 后台地址
-        target: 'http://mio.fcip.top:6050/',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api2/, '')
-      },
       '/server': {
-        // 后台地址
-        target: 'http://127.0.0.1:1889',
+        // lss 后台地址
+        target: 'http://http://127.0.0.1:1888', 
         changeOrigin: true,
         rewrite: path => path.replace('/server', '')
       }
