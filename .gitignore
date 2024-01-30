@@ -13,8 +13,8 @@ dist
 dist-ssr
 coverage
 *.local
-.VSCodeCounter/*
-jsond/*
+.VSCodeCounter
+jsond
 
 /cypress/videos/
 /cypress/screenshots/
