@@ -7,6 +7,9 @@
 | ![image](github/web.png) | ![image](github/mobile.png) |
 
 
+## 通知
+由于后端项目更新进度缓慢，本项目停止更新，启动对接 onebot协议的新项目 [mio-chat](https://github.com/Pretend-to/mio-chat-backend)
+
 ## 简介
 仿 qqnt 的 gpt webUI，由 [@lss233](https://github.com/lss233) 的优秀开源项目 [chatgpt-mirai-qq-bot](https://github.com/lss233/chatgpt-mirai-qq-bot) 提供后端支持。
 
